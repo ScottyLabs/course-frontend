@@ -34,7 +34,7 @@ class Info extends React.Component {
     if (query == '') {
       query = 'null';
     }
-    let url = 'https://cmucourseapi/courses/courseID/';
+    let url = 'https://cmucourseapi.herokuapp.com/courses/courseID/';
     fetch(url + query, {
       method: 'GET',
       headers: {
