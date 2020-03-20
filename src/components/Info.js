@@ -53,7 +53,7 @@ class Info extends React.Component {
     return (
       <>
         <Row>
-          <Col xs={2} md={4} lg={6} className="px-0">
+          <Col md={6}>
             <Form onSubmit={this.handleFormSubmit}>
               <InputGroup className="mb-3">
                 <FormControl

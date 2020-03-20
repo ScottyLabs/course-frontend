@@ -3,6 +3,7 @@ import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {
   Row,
+  Col,
   Container
 } from 'react-bootstrap';
 import Info from './components/Info';
@@ -12,7 +13,9 @@ function App() {
     <div className="App">
       <Container>
         <Row className="mt-3">
-          <h3>Query Course Info</h3>
+          <Col>
+           <h3>Query Course Info</h3>
+          </Col>
         </Row>
         <Info />
       </Container>
