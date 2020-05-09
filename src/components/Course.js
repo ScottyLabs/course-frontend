@@ -1,29 +1,32 @@
 import React from 'react';
 import { Row, Col } from 'react-bootstrap';
+import { useStore, useSelector } from 'react-redux'
 
-const Course = props => {
-  if (props.data === null) {
-    return null;
+const Course = () => {
+  const store = useStore()
+  const state = store.getState()
+  
+  const courseData = useSelector(state => state.courseData)
+  const courseID = state.courseID
+
+  if (!courseData) return null
+  let prereqs = 'none';
+  if (courseData.prereqs) {
+    prereqs = courseData.prereqs.join(', ');
   }
-  if (props.data.prereqs === null) {
-    var prereqs = 'none';
-  } else {
-    var prereqs = props.data.prereqs.join(', ');
-  }
-  if (props.data.coreqs === null) {
-    var coreqs = 'none';
-  } else {
-    var coreqs = props.data.coreqs.join(', ');
+  let coreqs = 'none'
+  if (courseData.coreqs) {
+    coreqs = courseData.coreqs.join(', ');
   }
   return (
     <>
       <Row className="mt-5">
         <Col>
           <h3 className="mb-3">
-            {props.data.courseID} {props.data.name}
+            {courseID} {courseData.name}
           </h3>
           <h5>Description:</h5>
-          <p>{props.data.desc}</p>
+          <p>{courseData.desc}</p>
         </Col>
       </Row>
       <Row className="mt-4">

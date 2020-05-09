@@ -14,7 +14,7 @@ function App() {
       <Container>
         <Row className="mt-3">
           <Col>
-           <h3>Query Course Info</h3>
+           <h2>ScottyLabs Course API</h2>
           </Col>
         </Row>
         <Info />
