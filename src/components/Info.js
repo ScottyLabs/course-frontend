@@ -19,7 +19,7 @@ import * as actions from "../actions";
 import { Snackbar } from "@material-ui/core"
 import MuiAlert from '@material-ui/lab/Alert';
 
-const BASE_URL = "http://apis.scottylabs.org/course-api"
+const BASE_URL = "https://apis.scottylabs.org/course-api"
 
 const Alert = (props) => {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
