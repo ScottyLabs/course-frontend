@@ -1,6 +1,8 @@
 const express = require('express');
 const favicon = require('express-favicon');
 const path = require('path');
+const dotenv = require('dotenv');
+dotenv.config();
 const port = process.env.PORT || 3002;
 const app = express();
 
