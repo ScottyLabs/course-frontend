@@ -1,7 +1,7 @@
-export const setCourseID = (courseID) => {
+export const setCourseIDs = (courseIDs) => {
   return {
-    type: 'SET_COURSE_ID',
-    courseID: courseID
+    type: 'SET_COURSE_IDs',
+    courseIDs: courseIDs
   }
 }
 
@@ -20,7 +20,7 @@ export const setFCEData = (fceData) => {
 }
 
 export default {
-  setCourseID,
+  setCourseIDs,
   setCourseData,
   setFCEData
 }

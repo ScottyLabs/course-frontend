@@ -1,23 +1,18 @@
-import React from 'react';
-import { Row, Col } from 'react-bootstrap';
-import { useStore, useSelector } from 'react-redux'
+import React from "react";
+import { Row, Col } from "react-bootstrap";
+import { useSelector } from "react-redux";
 
-const Course = () => {
-  const store = useStore()
-  const state = store.getState()
-  
-  const courseData = useSelector(state => state.courseData)
-  const courseID = state.courseID
-
-  if (!courseData) return null
-  let prereqs = 'none';
+const CourseRow = (data) => {
+  const courseData = data.data;
+  let prereqs = "none";
   if (courseData.prereqs) {
-    prereqs = courseData.prereqs.join(', ');
+    prereqs = courseData.prereqs.join(", ");
   }
-  let coreqs = 'none'
+  let coreqs = "none";
   if (courseData.coreqs) {
-    coreqs = courseData.coreqs.join(', ');
+    coreqs = courseData.coreqs.join(", ");
   }
+  const courseID = courseData.courseID;
   return (
     <>
       <Row className="mt-5">
@@ -41,6 +36,18 @@ const Course = () => {
       </Row>
     </>
   );
+};
+
+const Course = () => {
+  const courseData = useSelector((state) => state.courseData);
+
+  if (!courseData) return null;
+  const rows = [];
+  let id = 0;
+  for (const course of courseData) {
+    rows.push(<CourseRow data={course} key={id++} />);
+  }
+  return <>{rows}</>;
 };
 
 export default Course;

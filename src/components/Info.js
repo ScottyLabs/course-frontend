@@ -16,14 +16,14 @@ import FCE from "./FCE";
 import { useDispatch } from "react-redux";
 import { useState } from "react";
 import * as actions from "../actions";
-import { Snackbar } from "@material-ui/core"
-import MuiAlert from '@material-ui/lab/Alert';
+import { Snackbar } from "@material-ui/core";
+import MuiAlert from "@material-ui/lab/Alert";
 
-const BASE_URL = "https://apis.scottylabs.org/course-api"
+const BASE_URL = "https://apis.scottylabs.org/course-api";
 
 const Alert = (props) => {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
-}
+};
 
 const Info = () => {
   const dispatch = useDispatch();
@@ -33,56 +33,68 @@ const Info = () => {
   const [error, setError] = useState(false);
   const [notFound, setNotFound] = useState(false);
 
-  const queryCourse = async (query) => {
+  const queryCourse = async (courseIDs) => {
     const url = BASE_URL + "/courses/courseID/";
     try {
-      const response = await fetch(url + query);
-      if (response.status == 200) {
-        const data = await response.json();
-        dispatch(actions.info.setCourseData(data));
-      } else if (response.status == 404) {
-        
+      const courseData = []
+      for (const courseID of courseIDs) {
+        const response = await fetch(url + courseID);
+        if (response.status == 200) {
+          const data = await response.json();
+          courseData.push(data)
+        } else if (response.status == 404) {
+          setNotFound(true);
+        } else {
+          setError(true);
+        }
       }
+      dispatch(actions.info.setCourseData(courseData));
     } catch (e) {
       console.log(e);
     }
   };
-  const queryFCE = async (query) => {
+  const queryFCE = async (courseIDs) => {
     const url = BASE_URL + "/fces/courseID/";
     try {
-      const response = await fetch(url + query);
-      if (response.status == 200) {
-        const data = await response.json();
-        dispatch(actions.info.setFCEData(data));
-      } else if (response.status == 404) {
-        setNotFound(true)
-      } else {
-        // Error occured
+      const fceData = []
+      for (const courseID of courseIDs) {
+        const response = await fetch(url + courseID);
+        if (response.status == 200) {
+          const data = await response.json();
+          fceData.push(data)
+        } else if (response.status == 404) {
+          setNotFound(true);
+        } else {
+          setError(true);
+        }
       }
+      dispatch(actions.info.setFCEData(fceData));
     } catch (e) {
       console.log(e);
     }
   };
+
   const handleFieldChange = (e) => {
     setCourseID(e.target.value);
   };
+
   const handleFormSubmit = (e) => {
     e.preventDefault();
-    queryFCE(courseID);
-    queryCourse(courseID);
-    dispatch(actions.info.setCourseID(courseID));
+    const courseIDs = courseID.split(" ")
+    queryFCE(courseIDs);
+    queryCourse(courseIDs);
+    dispatch(actions.info.setCourseIDs(courseIDs));
   };
+
   const handleSwitch = (checked) => {
     setFCEMode(checked);
   };
-
   const handleCloseNotFound = (event, reason) => {
-    setNotFound(false)
-  }
-
+    setNotFound(false);
+  };
   const handleCloseError = (event, reason) => {
-    setError(false)
-  }
+    setError(false);
+  };
 
   const fceFormComponent = fceMode ? <FCEForm /> : null;
   const fceComponent = fceMode ? <FCE /> : null;
@@ -91,7 +103,7 @@ const Info = () => {
   return (
     <>
       <Row>
-        <Col md={6}>
+        <Col md={8}>
           <Form onSubmit={handleFormSubmit}>
             <InputGroup className="mb-3">
               <FormControl
@@ -124,7 +136,11 @@ const Info = () => {
           An error occured!
         </Alert>
       </Snackbar>
-      <Snackbar open={notFound} autoHideDuration={3000} onClose={handleCloseNotFound}>
+      <Snackbar
+        open={notFound}
+        autoHideDuration={3000}
+        onClose={handleCloseNotFound}
+      >
         <Alert severity="warning" onClose={handleCloseNotFound}>
           Course not found!
         </Alert>
