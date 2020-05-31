@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 import {
   Form,
   Row,
@@ -6,42 +6,47 @@ import {
   InputGroup,
   FormControl,
   Button,
-} from "react-bootstrap";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSearch } from "@fortawesome/free-solid-svg-icons";
-import BootstrapSwitchButton from "bootstrap-switch-button-react";
-import Course from "./Course";
-import FCEForm from "./FCEForm";
-import FCE from "./FCE";
-import { useDispatch } from "react-redux";
-import { useState } from "react";
-import * as actions from "../actions";
-import { Snackbar } from "@material-ui/core";
-import MuiAlert from "@material-ui/lab/Alert";
+} from 'react-bootstrap';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faSearch, faLock } from '@fortawesome/free-solid-svg-icons';
+import BootstrapSwitchButton from 'bootstrap-switch-button-react';
+import Course from './Course';
+import FCEForm from './FCEForm';
+import FCE from './FCE';
+import { useDispatch } from 'react-redux';
+import { useState } from 'react';
+import * as actions from '../actions';
+import { Snackbar } from '@material-ui/core';
+import MuiAlert from '@material-ui/lab/Alert';
 
-const BASE_URL = "https://apis.scottylabs.org/course-api";
+const BASE_URL = 'https://apis.scottylabs.org/course-api';
 
 const Alert = (props) => {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
 };
 
-const Info = () => {
+const Info = (props) => {
   const dispatch = useDispatch();
 
-  const [courseID, setCourseID] = useState("");
-  const [fceMode, setFCEMode] = useState(true);
+  const [courseID, setCourseID] = useState('');
+  const [fceMode, setFCEMode] = useState((prev) => {
+    if (!prev || (prev == true && !props.loggedIn)) {
+      return false;
+    }
+    return true;
+  });
   const [error, setError] = useState(false);
   const [notFound, setNotFound] = useState(false);
 
   const queryCourse = async (courseIDs) => {
-    const url = BASE_URL + "/courses/courseID/";
+    const url = BASE_URL + '/courses/courseID/';
     try {
-      const courseData = []
+      const courseData = [];
       for (const courseID of courseIDs) {
         const response = await fetch(url + courseID);
         if (response.status == 200) {
           const data = await response.json();
-          courseData.push(data)
+          courseData.push(data);
         } else if (response.status == 404) {
           setNotFound(true);
         } else {
@@ -54,14 +59,14 @@ const Info = () => {
     }
   };
   const queryFCE = async (courseIDs) => {
-    const url = BASE_URL + "/fces/courseID/";
+    const url = BASE_URL + '/fces/courseID/';
     try {
-      const fceData = []
+      const fceData = [];
       for (const courseID of courseIDs) {
         const response = await fetch(url + courseID);
         if (response.status == 200) {
           const data = await response.json();
-          fceData.push(data)
+          fceData.push(data);
         } else if (response.status == 404) {
           setNotFound(true);
         } else {
@@ -80,7 +85,7 @@ const Info = () => {
 
   const handleFormSubmit = (e) => {
     e.preventDefault();
-    const courseIDs = courseID.split(" ")
+    const courseIDs = courseID.split(' ');
     queryFCE(courseIDs);
     queryCourse(courseIDs);
     dispatch(actions.info.setCourseIDs(courseIDs));
@@ -100,7 +105,9 @@ const Info = () => {
   const fceComponent = fceMode ? <FCE /> : null;
   const courseComponent = fceMode ? null : <Course />;
 
-  return (
+  return props.loading ? (
+    <div></div>
+  ) : (
     <>
       <Row>
         <Col md={8}>
@@ -118,15 +125,23 @@ const Info = () => {
                   <FontAwesomeIcon icon={faSearch} />
                 </Button>
               </InputGroup.Append>
-              <BootstrapSwitchButton
-                checked={fceMode}
-                onlabel="FCE"
-                onstyle="success"
-                offlabel="Course"
-                offstyle="warning"
-                style="w-25 mx-4"
-                onChange={handleSwitch}
-              />
+              {props.loggedIn ? (
+                <BootstrapSwitchButton
+                  checked={fceMode}
+                  onlabel="FCE"
+                  onstyle="success"
+                  offlabel="Course"
+                  offstyle="warning"
+                  style="w-25 mx-4"
+                  onChange={handleSwitch}
+                />
+              ) : (
+                <Button
+                  disabled
+                  variant="secondary"
+                  className="w-25 mx-4"
+                ><FontAwesomeIcon icon={faLock} /> Course</Button>
+              )}
             </InputGroup>
           </Form>
         </Col>
