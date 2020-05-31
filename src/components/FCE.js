@@ -2,20 +2,31 @@ import React from "react";
 import { Row, Col, Table } from "react-bootstrap";
 import { useSelector } from "react-redux";
 
-const getAverageHrs = (collatedData) => {
+const getAverages = (collatedData) => {
   if (!collatedData || collatedData.length === 0) return 0;
   let totalHrs = 0;
+  let teachingRate = 0;
+  let courseRate = 0;
   for (const entry of collatedData) {
     const fces = entry.fces;
-    const count = fces.length;
     let average = 0;
+    teachingRate = 0;
+    courseRate = 0;
     for (const fce of fces) {
       average += fce.hrsPerWeek;
+      teachingRate += fce.rating[7];
+      courseRate += fce.rating[8];
     }
-    average /= count;
+    average /= fces.length;
+    teachingRate /= fces.length;
+    courseRate /= fces.length;
     if (!isNaN(average)) totalHrs += average;
   }
-  return totalHrs;
+  return {
+    hours: totalHrs,
+    teachingRate: teachingRate,
+    courseRate: courseRate,
+  };
 };
 
 const FCETable = (data) => {
@@ -23,6 +34,8 @@ const FCETable = (data) => {
   const rows = [];
   let i = 0;
   for (const semester of fces) {
+    const teachingRate = semester.rating[7];
+    const courseRate = semester.rating[8];
     const row = (
       <tr key={i++}>
         <td>{semester.year}</td>
@@ -31,6 +44,8 @@ const FCETable = (data) => {
         <td>
           <b>{semester.hrsPerWeek}</b>
         </td>
+        <td>{teachingRate}</td>
+        <td>{courseRate}</td>
         <td>{semester.numRespondents}</td>
         <td>{semester.responseRate}</td>
       </tr>
@@ -45,6 +60,8 @@ const FCETable = (data) => {
           <th>Semester</th>
           <th>Instructor</th>
           <th>FCE Hours</th>
+          <th>Teaching Rate</th>
+          <th>Course Rate</th>
           <th># of Respondents</th>
           <th>Response Rate</th>
         </tr>
@@ -65,7 +82,7 @@ const CourseTable = (data) => {
         <td>{course.courseID}</td>
         <td>{course.courseName}</td>
         <td>
-          <b>{course.avgHours.toFixed(2)}</b>
+          <b>{course.averageHours.toFixed(2)}</b>
         </td>
       </tr>
     );
@@ -103,6 +120,8 @@ const trimFCEData = (courses, query) => {
         if (!enabledSemesters[label]) continue;
         let found = false;
         year[label].forEach((fce) => {
+          // Skip CMU Qatar sections
+          if (fce.section === "W") return;
           fce["year"] = year.year;
           fce["semester"] = label;
           if (fce.hrsPerWeek != 0) {
@@ -121,7 +140,15 @@ const trimFCEData = (courses, query) => {
 };
 
 const LayoutSingle = (data) => {
-  const { courseID, courseName, totalHrs, fceData, semesters } = data.data;
+  const {
+    courseID,
+    courseName,
+    averageHrs,
+    averageTeachingRate,
+    averageCourseRate,
+    fceData,
+    semesters,
+  } = data.data;
   return (
     <>
       <Row className="mt-5">
@@ -134,10 +161,24 @@ const LayoutSingle = (data) => {
       <Row className="mt-3">
         <Col>
           <h5>
-            Average Hours per Week: <b>{totalHrs.toFixed(2)}</b>
+            Average Hours per Week: <b>{averageHrs.toFixed(2)}</b>
           </h5>
         </Col>
       </Row>
+      <Row>
+        <Col>
+          <h5>
+            Average Teaching Rate: <b>{averageTeachingRate.toFixed(2)}</b>
+          </h5>
+        </Col>
+      </Row>
+      <Row>
+        <Col>
+          <h5>
+            Average Course Rate: <b>{averageCourseRate.toFixed(2)}</b>
+          </h5>
+        </Col>
+      </Row>      
       <Row>
         <Col>
           <p>
@@ -186,7 +227,10 @@ const FCE = () => {
   if (!rawFCEData || !courseData) return null;
 
   const collatedData = trimFCEData(rawFCEData, fceQuery);
-  const totalHrs = getAverageHrs(collatedData);
+  const averages = getAverages(collatedData);
+  const averageHrs = averages.hours;
+  const averageTeachingRate = averages.teachingRate;
+  const averageCourseRate = averages.courseRate;
 
   if (collatedData.length == 1) {
     const courseInfo = courseData[0];
@@ -195,7 +239,9 @@ const FCE = () => {
     const data = {
       courseID: courseID,
       courseName: courseName,
-      totalHrs: totalHrs,
+      averageHrs: averageHrs,
+      averageTeachingRate: averageTeachingRate,
+      averageCourseRate: averageCourseRate,
       fceData: collatedData[0],
       semesters: fceQuery.semesterCount,
     };
@@ -207,12 +253,12 @@ const FCE = () => {
     const entry = {
       courseID: course.courseID,
       courseName: getCourseName(course.courseID, courseData),
-      avgHours: getAverageHrs([course]),
+      avgHours: getAverages([course]).hours,
     };
     courseInfo.push(entry);
   }
   const data = {
-    totalHrs: totalHrs,
+    totalHrs: averageHrs,
     courseData: courseInfo,
     semesters: fceQuery.semesterCount,
   };
