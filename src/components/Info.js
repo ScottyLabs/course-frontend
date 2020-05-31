@@ -18,8 +18,12 @@ import { useState } from 'react';
 import * as actions from '../actions';
 import { Snackbar } from '@material-ui/core';
 import MuiAlert from '@material-ui/lab/Alert';
+import axios from 'axios';
 
 const BASE_URL = 'https://apis.scottylabs.org/course-api';
+const axiosInstance = axios.create({
+  validateStatus: status => true
+});
 
 const Alert = (props) => {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -36,6 +40,7 @@ const Info = (props) => {
     return true;
   });
   const [error, setError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('An error occured!');
   const [notFound, setNotFound] = useState(false);
 
   const queryCourse = async (courseIDs) => {
@@ -43,18 +48,20 @@ const Info = (props) => {
     try {
       const courseData = [];
       for (const courseID of courseIDs) {
-        const response = await fetch(url + courseID);
+        const response = await axiosInstance.get(url + courseID);
         if (response.status == 200) {
-          const data = await response.json();
+          const data = response.data;
           courseData.push(data);
         } else if (response.status == 404) {
           setNotFound(true);
         } else {
           setError(true);
+          setErrorMessage('Unknown course ID: ' + courseID);
         }
       }
       dispatch(actions.info.setCourseData(courseData));
     } catch (e) {
+      setError(true);
       console.log(e);
     }
   };
@@ -63,18 +70,20 @@ const Info = (props) => {
     try {
       const fceData = [];
       for (const courseID of courseIDs) {
-        const response = await fetch(url + courseID);
+        const response = await axiosInstance.get(url + courseID);
         if (response.status == 200) {
-          const data = await response.json();
+          const data = response.data;
           fceData.push(data);
         } else if (response.status == 404) {
           setNotFound(true);
         } else {
           setError(true);
+          setErrorMessage('Unknown course ID: ' + courseID);
         }
       }
       dispatch(actions.info.setFCEData(fceData));
     } catch (e) {
+      setError(true);
       console.log(e);
     }
   };
@@ -99,6 +108,7 @@ const Info = (props) => {
   };
   const handleCloseError = (event, reason) => {
     setError(false);
+    setErrorMessage('An error occured!');
   };
 
   const fceFormComponent = fceMode ? <FCEForm /> : null;
@@ -148,7 +158,7 @@ const Info = (props) => {
       </Row>
       <Snackbar open={error} autoHideDuration={3000} onClose={handleCloseError}>
         <Alert severity="error" onClose={handleCloseError}>
-          An error occured!
+          {errorMessage}
         </Alert>
       </Snackbar>
       <Snackbar
