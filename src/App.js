@@ -12,9 +12,9 @@ const Alert = (props) => {
 };
 
 function App() {
-  const [loggedIn, setLoggedIn] = useState(true);
+  const [loggedIn, setLoggedIn] = useState(false);
   const [accessToken, setAccessToken] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [loginError, setLoginError] = useState(false);
   const [logoutError, setLogoutError] = useState(false);
 
