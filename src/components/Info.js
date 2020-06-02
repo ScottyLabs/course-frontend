@@ -20,9 +20,12 @@ import { Snackbar } from '@material-ui/core';
 import MuiAlert from '@material-ui/lab/Alert';
 import axios from 'axios';
 
-const BASE_URL = 'https://apis.scottylabs.org/course-api';
+const BASE_URL = process.env.REACT_APP_API_URL;
 const axiosInstance = axios.create({
-  validateStatus: status => true
+  validateStatus: status => true,
+  headers: {
+    'x-access-token': process.env.REACT_APP_API_TOKEN
+  }
 });
 
 const Alert = (props) => {
