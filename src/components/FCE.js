@@ -224,7 +224,8 @@ const FCE = () => {
   const fceQuery = useSelector((state) => state.fceQuery);
   const courseData = useSelector((state) => state.courseData);
 
-  if (!rawFCEData || !courseData) return null;
+  if (!rawFCEData || !courseData || !rawFCEData.length || !courseData.length)
+    return null;
 
   const collatedData = trimFCEData(rawFCEData, fceQuery);
   const averages = getAverages(collatedData);
