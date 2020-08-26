@@ -82,7 +82,7 @@ const CourseTable = (data) => {
         <td>{course.courseID}</td>
         <td>{course.courseName}</td>
         <td>
-          <b>{course.averageHours.toFixed(2)}</b>
+          <b>{course.avgHours.toFixed(2)}</b>
         </td>
       </tr>
     );
@@ -178,7 +178,7 @@ const LayoutSingle = (data) => {
             Average Course Rate: <b>{averageCourseRate.toFixed(2)}</b>
           </h5>
         </Col>
-      </Row>      
+      </Row>
       <Row>
         <Col>
           <p>
@@ -224,7 +224,8 @@ const FCE = () => {
   const fceQuery = useSelector((state) => state.fceQuery);
   const courseData = useSelector((state) => state.courseData);
 
-  if (!rawFCEData || !courseData) return null;
+  if (!rawFCEData || !courseData || !rawFCEData.length || !courseData.length)
+    return null;
 
   const collatedData = trimFCEData(rawFCEData, fceQuery);
   const averages = getAverages(collatedData);
