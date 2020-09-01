@@ -125,9 +125,10 @@ const Info = (props) => {
       <Row>
         <Col md={8}>
           <Form onSubmit={handleFormSubmit}>
+            <h5>Course IDs</h5>
             <InputGroup className="mb-3">
               <FormControl
-                placeholder="Course ID"
+                placeholder="e.g. 21127 15-112"
                 aria-label="Course ID"
                 aria-describedby="course-id"
                 value={courseID}
