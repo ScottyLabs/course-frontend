@@ -74,7 +74,7 @@ export const Main = (props) => {
       <Container>
         <Row className="my-3">
           <Col>
-            <h2>ScottyLabs Course API</h2>
+            <h2>ScottyLabs Course Tool</h2>
           </Col>
           <Col className="my-auto">
             <LoginButton
