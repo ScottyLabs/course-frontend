@@ -32,11 +32,17 @@ const LoginButton = (props) => {
   return (
     <div>
       {props.state.loggedIn ? (
-        <Button variant="outline-primary" size="sm" onClick={logout}>
+        <Button
+          className="float-right"
+          variant="outline-primary"
+          size="sm"
+          onClick={logout}
+        >
           Logout
         </Button>
       ) : (
         <Button
+          className="float-right"
           variant="outline-primary"
           size="sm"
           as="a"
