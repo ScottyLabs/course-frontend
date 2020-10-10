@@ -12,7 +12,6 @@ import {
 } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch, faLock } from "@fortawesome/free-solid-svg-icons";
-import BootstrapSwitchButton from "bootstrap-switch-button-react";
 import Course from "./Course";
 import FCEForm from "./FCEForm";
 import FCE from "./FCE";
