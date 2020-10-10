@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
-import LoginButton from '../components/LoginButton';
-import { Row, Col, Container, Spinner, Alert } from 'react-bootstrap';
-import Info from '../components/Info';
-import { Snackbar } from '@material-ui/core';
-import jwt from 'jsonwebtoken';
-import { useHistory } from 'react-router-dom';
-import MuiAlert from '@material-ui/lab/Alert';
+import React, { useState } from "react";
+import LoginButton from "../components/LoginButton";
+import { Row, Col, Container, Spinner, Alert } from "react-bootstrap";
+import Info from "../components/Info";
+import { Snackbar } from "@material-ui/core";
+import jwt from "jsonwebtoken";
+import { useHistory } from "react-router-dom";
+import MuiAlert from "@material-ui/lab/Alert";
 
 const PopupAlert = (props) => {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -13,10 +13,10 @@ const PopupAlert = (props) => {
 
 const readQuery = (query) => {
   if (query) {
-    const queryArray = query.slice(query.indexOf('?') + 1).split('&');
+    const queryArray = query.slice(query.indexOf("?") + 1).split("&");
     let result = {};
     for (let item of queryArray) {
-      let tmp = item.split('=');
+      let tmp = item.split("=");
       result[tmp[0]] = tmp[1];
     }
     return result;
@@ -28,7 +28,7 @@ const checkAccessToken = (props) => {
     const query = readQuery(search);
     try {
       jwt.verify(query.accessToken, process.env.REACT_APP_JWT_SECRET);
-      window.localStorage.setItem('accessToken', query.accessToken);
+      window.localStorage.setItem("accessToken", query.accessToken);
       return true;
     } catch (err) {
       console.log(err);
@@ -36,7 +36,7 @@ const checkAccessToken = (props) => {
     }
   };
 
-  const accessToken = window.localStorage.getItem('accessToken');
+  const accessToken = window.localStorage.getItem("accessToken");
   if (accessToken) {
     try {
       jwt.verify(accessToken, process.env.REACT_APP_JWT_SECRET);
@@ -58,7 +58,7 @@ export const Main = (props) => {
   const [logoutError, setLogoutError] = useState(false);
 
   if (props.location.search) {
-    history.push('/');
+    history.push("/");
   }
 
   const handleCloseLoginError = (event, reason) => {

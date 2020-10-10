@@ -1,6 +1,6 @@
-import React, { Component } from 'react';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import { Button } from 'react-bootstrap';
+import React, { Component } from "react";
+import "bootstrap/dist/css/bootstrap.min.css";
+import { Button } from "react-bootstrap";
 
 const CLIENT_ID = process.env.REACT_APP_GOOGLE_CLIENT_ID;
 
@@ -15,7 +15,7 @@ const LoginButton = (props) => {
   };
 
   const logout = (res) => {
-    window.localStorage.removeItem('accessToken');
+    window.localStorage.removeItem("accessToken");
     props.setState.setLoading(true);
     props.setState.setLoggedIn(false);
     props.setState.setLoading(false);

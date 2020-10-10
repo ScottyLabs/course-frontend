@@ -6,13 +6,13 @@ import * as actions from "../actions";
 import FormGroup from "@material-ui/core/FormGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Checkbox from "@material-ui/core/Checkbox";
-import { withStyles } from '@material-ui/core/styles';
-import { green, orange, lightBlue } from '@material-ui/core/colors';
+import { withStyles } from "@material-ui/core/styles";
+import { green, orange, lightBlue } from "@material-ui/core/colors";
 
 const SpringCheckbox = withStyles({
   root: {
     color: green[400],
-    '&$checked': {
+    "&$checked": {
       color: green[600],
     },
   },
@@ -22,7 +22,7 @@ const SpringCheckbox = withStyles({
 const FallCheckbox = withStyles({
   root: {
     color: orange[600],
-    '&$checked': {
+    "&$checked": {
       color: orange[800],
     },
   },
@@ -32,7 +32,7 @@ const FallCheckbox = withStyles({
 const SummerCheckbox = withStyles({
   root: {
     color: lightBlue[400],
-    '&$checked': {
+    "&$checked": {
       color: lightBlue[600],
     },
   },
@@ -42,23 +42,23 @@ const SummerCheckbox = withStyles({
 // TODO: add checkboxes for professors
 const FCEForm = () => {
   const dispatch = useDispatch();
-  const fceData = useSelector(state => state.fceData)
+  const fceData = useSelector((state) => state.fceData);
 
-  const fall = useSelector(state => state.fceQuery.semesters.fall)
-  const spring = useSelector(state => state.fceQuery.semesters.spring)
-  const summer = useSelector(state => state.fceQuery.semesters.summer)
+  const fall = useSelector((state) => state.fceQuery.semesters.fall);
+  const spring = useSelector((state) => state.fceQuery.semesters.spring);
+  const summer = useSelector((state) => state.fceQuery.semesters.summer);
 
   const [instructor, setInstructor] = useState("");
   const [semesterCount, setSemesterCount] = useState("");
 
   const handleSemesterChange = async (e, idx) => {
-    const checked = e.target.checked
+    const checked = e.target.checked;
     if (idx === 0) {
-      dispatch(actions.fce.setSemesters(checked, spring, summer))
+      dispatch(actions.fce.setSemesters(checked, spring, summer));
     } else if (idx === 1) {
-      dispatch(actions.fce.setSemesters(fall, checked, summer))
+      dispatch(actions.fce.setSemesters(fall, checked, summer));
     } else if (idx === 2) {
-      dispatch(actions.fce.setSemesters(fall, spring, checked))
+      dispatch(actions.fce.setSemesters(fall, spring, checked));
     }
   };
 
@@ -74,12 +74,12 @@ const FCEForm = () => {
 
   return (
     <>
-      <Row className='mt-1'>
+      <Row className="mt-1">
         <Col md={6}>
           <h3>Optional Parameters</h3>
         </Col>
       </Row>
-      <Row className='mt-1'>
+      <Row className="mt-1">
         <Col md={4}>
           <h5>Semesters</h5>
         </Col>
@@ -118,7 +118,7 @@ const FCEForm = () => {
           </FormGroup>
         </Col>
       </Row>
-      <Row className='mt-1'>
+      <Row className="mt-1">
         <Col md={4}>
           <h6>Number of Semesters to Sample</h6>
         </Col>
@@ -131,7 +131,7 @@ const FCEForm = () => {
           />
         </Col>
       </Row>
-      <Row className='mt-1'>
+      <Row className="mt-1">
         <Col md={4}>
           <h6>Instructor(s)</h6>
         </Col>
