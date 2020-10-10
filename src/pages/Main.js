@@ -3,52 +3,9 @@ import LoginButton from "../components/LoginButton";
 import { Row, Col, Container, Spinner, Alert } from "react-bootstrap";
 import Info from "../components/Info";
 import { Snackbar } from "@material-ui/core";
-import jwt from "jsonwebtoken";
 import { useHistory } from "react-router-dom";
-import MuiAlert from "@material-ui/lab/Alert";
-
-const PopupAlert = (props) => {
-  return <MuiAlert elevation={6} variant="filled" {...props} />;
-};
-
-const readQuery = (query) => {
-  if (query) {
-    const queryArray = query.slice(query.indexOf("?") + 1).split("&");
-    let result = {};
-    for (let item of queryArray) {
-      let tmp = item.split("=");
-      result[tmp[0]] = tmp[1];
-    }
-    return result;
-  }
-};
-
-const checkAccessToken = (props) => {
-  const getNewToken = (search) => {
-    const query = readQuery(search);
-    try {
-      jwt.verify(query.accessToken, process.env.REACT_APP_JWT_SECRET);
-      window.localStorage.setItem("accessToken", query.accessToken);
-      return true;
-    } catch (err) {
-      console.log(err);
-      return false;
-    }
-  };
-
-  const accessToken = window.localStorage.getItem("accessToken");
-  if (accessToken) {
-    try {
-      jwt.verify(accessToken, process.env.REACT_APP_JWT_SECRET);
-      return true;
-    } catch (err) {
-      console.log(err);
-      return getNewToken(props?.location?.search);
-    }
-  } else if (!accessToken) {
-    return getNewToken(props?.location?.search);
-  }
-};
+import { checkAccessToken } from "../util/authUtils";
+import { PopupAlert } from "../components/Alert";
 
 export const Main = (props) => {
   const history = useHistory();
@@ -71,7 +28,7 @@ export const Main = (props) => {
 
   return (
     <div className="App">
-      <Container>
+      <Container className="pb-5">
         <Alert variant="warning" className="mt-3">
           We have received feedback regarding the availability of Spring 2020
           FCEs and are working to add them as soon as possible. Meanwhile, feel
@@ -90,8 +47,6 @@ export const Main = (props) => {
               setState={{
                 setLoggedIn: setLoggedIn,
                 setLoading: setLoading,
-                setLoginError: setLoginError,
-                setLogoutError: setLogoutError,
               }}
             />
           </Col>

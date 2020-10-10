@@ -19,7 +19,7 @@ import { useDispatch } from "react-redux";
 import { useState } from "react";
 import * as actions from "../actions";
 import { Snackbar } from "@material-ui/core";
-import MuiAlert from "@material-ui/lab/Alert";
+import { PopupAlert } from "./Alert";
 import axios from "axios";
 
 const BASE_URL = process.env.REACT_APP_API_URL;
@@ -29,10 +29,6 @@ const axiosInstance = axios.create({
     "x-access-token": process.env.REACT_APP_API_TOKEN,
   },
 });
-
-const Alert = (props) => {
-  return <MuiAlert elevation={6} variant="filled" {...props} />;
-};
 
 const Info = (props) => {
   const dispatch = useDispatch();
@@ -171,18 +167,18 @@ const Info = (props) => {
         </Col>
       </Row>
       <Snackbar open={error} autoHideDuration={3000} onClose={handleCloseError}>
-        <Alert severity="error" onClose={handleCloseError}>
+        <PopupAlert severity="error" onClose={handleCloseError}>
           {errorMessage}
-        </Alert>
+        </PopupAlert>
       </Snackbar>
       <Snackbar
         open={notFound}
         autoHideDuration={3000}
         onClose={handleCloseNotFound}
       >
-        <Alert severity="warning" onClose={handleCloseNotFound}>
+        <PopupAlert severity="warning" onClose={handleCloseNotFound}>
           Course not found!
-        </Alert>
+        </PopupAlert>
       </Snackbar>
       {fceMode ? <FCEForm /> : null}
       {fceMode ? <FCE /> : null}
