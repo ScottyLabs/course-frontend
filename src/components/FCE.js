@@ -296,11 +296,9 @@ const FCERow = (props) => {
 const getCourseInfo = (courseID, courseData) => {
   for (const course of courseData) {
     if (course.courseID === courseID) {
-      console.log([course.name, course.department]);
       return [course.name, course.department];
     }
   }
-  console.log(null);
   return [null, null];
 };
 
@@ -318,7 +316,6 @@ const FCE = () => {
 
   const courseInfo = [];
   for (const course of collatedData) {
-    console.log(course);
     const averages = getAverages([course]);
     const [courseName, courseDept] = getCourseInfo(course.courseID, courseData);
     const entry = {
@@ -337,7 +334,6 @@ const FCE = () => {
     courseData: courseInfo,
     semesters: fceQuery.semesterCount,
   };
-  console.log(data);
   const rows = [];
   let id = 0;
   rows.push(<FCESummary data={data} key={id++} />);
