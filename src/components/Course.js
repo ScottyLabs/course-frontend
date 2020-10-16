@@ -11,31 +11,7 @@ import {
   Badge,
 } from "react-bootstrap";
 import { useSelector } from "react-redux";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCaretDown } from "@fortawesome/free-solid-svg-icons";
-
-const CustomToggle = ({ children, eventKey, callback }) => {
-  const currentEventKey = useContext(AccordionContext);
-
-  const decoratedOnClick = useAccordionToggle(eventKey, null);
-
-  const isCurrentEventKey = currentEventKey === eventKey;
-
-  return (
-    <Card.Header onClick={decoratedOnClick}>
-      {isCurrentEventKey ? (
-        <FontAwesomeIcon icon={faCaretDown} className="mr-2" />
-      ) : (
-        <FontAwesomeIcon
-          icon={faCaretDown}
-          className="mr-2"
-          transform={{ rotate: -90 }}
-        />
-      )}
-      {children}
-    </Card.Header>
-  );
-};
+import { CustomToggle } from "./CustomToggle";
 
 const CourseRow = (props) => {
   const courseData = props.data;

@@ -75,13 +75,8 @@ const FCEForm = () => {
   return (
     <>
       <Row className="mt-1">
-        <Col md={6}>
-          <h3>Optional Parameters</h3>
-        </Col>
-      </Row>
-      <Row className="mt-1">
         <Col md={4}>
-          <h5>Semesters</h5>
+          <h6>Semesters</h6>
         </Col>
         <Col md={4}>
           <FormGroup row>

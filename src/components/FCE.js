@@ -1,6 +1,17 @@
 import React from "react";
-import { Row, Col, Table } from "react-bootstrap";
+import {
+  Row,
+  Col,
+  Table,
+  Accordion,
+  Card,
+  Badge,
+  Container,
+} from "react-bootstrap";
 import { useSelector } from "react-redux";
+import { CustomToggle } from "./CustomToggle";
+import Rating from "@material-ui/lab/Rating";
+import StarBorderIcon from "@material-ui/icons/StarBorder";
 
 const getAverages = (collatedData) => {
   if (!collatedData || collatedData.length === 0) return 0;
@@ -30,6 +41,7 @@ const getAverages = (collatedData) => {
 };
 
 const FCETable = (data) => {
+  console.log(data);
   const fces = data.data.fces;
   const rows = [];
   let i = 0;
@@ -139,84 +151,157 @@ const trimFCEData = (courses, query) => {
   return collatedData;
 };
 
-const LayoutSingle = (data) => {
-  const {
-    courseID,
-    courseName,
-    averageHrs,
-    averageTeachingRate,
-    averageCourseRate,
-    fceData,
-    semesters,
-  } = data.data;
+const getHoursColor = (hours) => {
+  if (hours < 8) return "success";
+  else if (hours < 12) return "info";
+  else if (hours < 20) return "warning";
+  else return "danger";
+};
+
+const FCESummary = (props) => {
   return (
-    <>
-      <Row className="mt-5">
-        <Col>
-          <h3>
-            FCEs for {courseID}: {courseName}
-          </h3>
-        </Col>
-      </Row>
-      <Row className="mt-3">
-        <Col>
-          <h5>
-            Average Hours per Week: <b>{averageHrs.toFixed(2)}</b>
-          </h5>
-        </Col>
-      </Row>
-      <Row>
-        <Col>
-          <h5>
-            Average Teaching Rate: <b>{averageTeachingRate.toFixed(2)}</b>
-          </h5>
-        </Col>
-      </Row>
-      <Row>
-        <Col>
-          <h5>
-            Average Course Rate: <b>{averageCourseRate.toFixed(2)}</b>
-          </h5>
-        </Col>
-      </Row>
-      <Row>
-        <Col>
-          <p>
-            Across <b>{semesters}</b> semesters
-          </p>
-        </Col>
-      </Row>
-      <FCETable data={fceData} />
-    </>
+    <Row className="mt-3 mx-0">
+      <Accordion defaultActiveKey="0" className="w-100">
+        <Card bg="light">
+          <CustomToggle eventKey="0">FCE Summary </CustomToggle>
+          <Accordion.Collapse eventKey="0">
+            <Container>
+              <Row className="mt-3">
+                <Col>
+                  <h4>
+                    Total Average Hours per Week:{" "}
+                    {props.data.totalHrs.toFixed(2)}
+                  </h4>
+                </Col>
+              </Row>
+              <Row className="mt-3">
+                <Col>
+                  <CourseTable data={props.data.courseData} />
+                </Col>
+              </Row>
+              <Row>
+                <Col>
+                  <p className="lead">
+                    Data collated across <strong>{props.data.semesters}</strong>{" "}
+                    semesters
+                  </p>
+                </Col>
+              </Row>
+            </Container>
+          </Accordion.Collapse>
+        </Card>
+      </Accordion>
+    </Row>
   );
 };
 
-const LayoutMultiple = (data) => {
-  const { totalHrs, courseData, semesters } = data.data;
+const FCERow = (props) => {
   return (
-    <>
-      <Row className="mt-5">
-        <Col>
-          <h4>Total Average Hours per Week: {totalHrs.toFixed(2)}</h4>
-        </Col>
-      </Row>
-      <Row>
-        <Col>
-          <p>
-            Across <b>{semesters}</b> semesters
-          </p>
-        </Col>
-      </Row>
-      <CourseTable data={courseData} />
-    </>
+    <Row className="mt-3 mx-0">
+      <Accordion defaultActiveKey="0" className="w-100">
+        <Card bg="light">
+          <CustomToggle eventKey="0">
+            {props.data.courseID} {props.data.courseName}{" "}
+            <Badge variant="info" className="ml-2">
+              {props.data.courseDept}
+            </Badge>
+          </CustomToggle>
+          <Accordion.Collapse eventKey="0">
+            <Container>
+              <Row className="mt-3">
+                <Col md={3}>
+                  <h5>Average Hours per Week </h5>
+                </Col>
+                <Col md={9}>
+                  <h5>
+                    <Badge pill variant={getHoursColor(props.data.avgHours)}>
+                      {props.data.avgHours.toFixed(2)}
+                    </Badge>
+                  </h5>
+                </Col>
+              </Row>
+              <Row>
+                <Col md={3}>
+                  <h5>Average Teaching Rate </h5>
+                </Col>
+                <Col md={9}>
+                  <h6
+                    className="mr-2"
+                    style={{
+                      display: "inline",
+                      position: "relative",
+                      bottom: "0.25em",
+                    }}
+                  >
+                    {props.data.avgTeachingRate.toFixed(2)}
+                  </h6>
+                  <div style={{ display: "inline" }}>
+                    <Rating
+                      name="avgTeaching"
+                      value={props.data.avgTeachingRate}
+                      precision={0.5}
+                      readOnly
+                      emptyIcon={<StarBorderIcon />}
+                    />
+                  </div>
+                </Col>
+              </Row>
+              <Row>
+                <Col md={3}>
+                  <h5>Average Course Rate </h5>
+                </Col>
+                <Col md={9}>
+                  <h6
+                    className="mr-2"
+                    style={{
+                      display: "inline",
+                      position: "relative",
+                      bottom: "0.25em",
+                    }}
+                  >
+                    {props.data.avgCourseRate.toFixed(2)}
+                  </h6>
+                  <div style={{ display: "inline" }}>
+                    <Rating
+                      name="avgCourse"
+                      value={props.data.avgCourseRate}
+                      precision={0.5}
+                      readOnly
+                      emptyIcon={<StarBorderIcon />}
+                    />
+                  </div>
+                </Col>
+              </Row>
+              <Row className="mt-3">
+                <Col>
+                  <FCETable data={props.data} />
+                </Col>
+              </Row>
+              <Row>
+                <Col>
+                  <p className="lead">
+                    Data collated across <strong>{props.semesters}</strong>{" "}
+                    semesters
+                  </p>
+                </Col>
+              </Row>
+            </Container>
+          </Accordion.Collapse>
+        </Card>
+      </Accordion>
+    </Row>
   );
 };
 
-const getCourseName = (courseID, courseData) => {
+const getCourseInfo = (courseID, courseData) => {
   for (const course of courseData) {
-    if (course.courseID === courseID) return course.name;
+    if (course.courseID === courseID) {
+      console.log([course.name, course.department]);
+      return [course.name, course.department];
+    }
   }
-  return null;
+  console.log(null);
+  return [null, null];
 };
 
 const FCE = () => {
@@ -230,31 +315,20 @@ const FCE = () => {
   const collatedData = trimFCEData(rawFCEData, fceQuery);
   const averages = getAverages(collatedData);
   const averageHrs = averages.hours;
-  const averageTeachingRate = averages.teachingRate;
-  const averageCourseRate = averages.courseRate;
 
-  if (collatedData.length == 1) {
-    const courseInfo = courseData[0];
-    const courseID = courseInfo.courseID;
-    const courseName = courseInfo.name;
-    const data = {
-      courseID: courseID,
-      courseName: courseName,
-      averageHrs: averageHrs,
-      averageTeachingRate: averageTeachingRate,
-      averageCourseRate: averageCourseRate,
-      fceData: collatedData[0],
-      semesters: fceQuery.semesterCount,
-    };
-
-    return <LayoutSingle data={data} />;
-  }
   const courseInfo = [];
   for (const course of collatedData) {
+    console.log(course);
+    const averages = getAverages([course]);
+    const [courseName, courseDept] = getCourseInfo(course.courseID, courseData);
     const entry = {
       courseID: course.courseID,
-      courseName: getCourseName(course.courseID, courseData),
-      avgHours: getAverages([course]).hours,
+      courseName: courseName,
+      courseDept: courseDept,
+      avgHours: averages.hours,
+      avgTeachingRate: averages.teachingRate,
+      avgCourseRate: averages.courseRate,
+      fces: course.fces,
     };
     courseInfo.push(entry);
   }
@@ -263,7 +337,14 @@ const FCE = () => {
     courseData: courseInfo,
     semesters: fceQuery.semesterCount,
   };
-  return <LayoutMultiple data={data} />;
+  console.log(data);
+  const rows = [];
+  let id = 0;
+  rows.push(<FCESummary data={data} key={id++} />);
+  for (const course of data.courseData) {
+    rows.push(<FCERow data={course} semesters={data.semesters} key={id++} />);
+  }
+  return <>{rows}</>;
 };
 
 export default FCE;
