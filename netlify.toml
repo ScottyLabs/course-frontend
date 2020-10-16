@@ -1,0 +1,12 @@
+[build]
+  base = ""
+  publish = "build"
+  command = "npm run build"
+
+[context.production.environment]
+  NODE_ENV = "production"
+  REACT_APP_ENV = "production"
+
+[context."develop".environment]
+  NODE_ENV = "development"
+  REACT_APP_ENV = "development"
