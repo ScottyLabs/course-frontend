@@ -3,19 +3,22 @@ import LoginButton from "../components/LoginButton";
 import { Row, Col, Container, Spinner, Alert } from "react-bootstrap";
 import Info from "../components/Info";
 import { Snackbar } from "@material-ui/core";
-import { useHistory } from "react-router-dom";
+import { useLocation, useHistory, useParams } from "react-router-dom";
 import { checkAccessToken } from "../util/authUtils";
 import { PopupAlert } from "../components/Alert";
 
 export const Main = (props) => {
   const history = useHistory();
-  const [loggedIn, setLoggedIn] = useState(checkAccessToken(props));
+  const location = useLocation();
+  const { courseIDs } = useParams();
+  const [loggedIn, setLoggedIn] = useState(checkAccessToken(location));
   const [loading, setLoading] = useState(false);
   const [loginError, setLoginError] = useState(false);
   const [logoutError, setLogoutError] = useState(false);
 
-  if (props.location.search) {
-    history.push("/");
+  if (location.search) {
+    console.log(history);
+    history.push("/course");
   }
 
   const handleCloseLoginError = (event, reason) => {
@@ -74,7 +77,12 @@ export const Main = (props) => {
             <span className="sr-only">Loading...</span>
           </Spinner>
         ) : (
-          <Info loggedIn={loggedIn} loading={loading} />
+          <Info
+            loggedIn={loggedIn}
+            loading={loading}
+            fce={props.fce}
+            courseIDs={courseIDs}
+          />
         )}
       </Container>
     </div>

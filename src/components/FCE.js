@@ -119,7 +119,7 @@ const trimFCEData = (courses, query) => {
   for (const data of courses) {
     let semesterCount = Number.parseInt(query?.semesterCount);
     if (isNaN(semesterCount)) semesterCount = 2;
-    const instructor = query?.instructor;
+    // const instructor = query?.instructor;
     const enabledSemesters = query?.semesters;
 
     const fces = [];
@@ -136,7 +136,7 @@ const trimFCEData = (courses, query) => {
           if (fce.section === "W") return;
           fce["year"] = year.year;
           fce["semester"] = label;
-          if (fce.hrsPerWeek != 0) {
+          if (fce.hrsPerWeek !== 0) {
             fces.push(fce);
             found = true;
           }

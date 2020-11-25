@@ -1,9 +1,6 @@
-import React, { useContext } from "react";
+import React from "react";
 import {
   Accordion,
-  AccordionContext,
-  useAccordionToggle,
-  Button,
   Container,
   Card,
   Row,

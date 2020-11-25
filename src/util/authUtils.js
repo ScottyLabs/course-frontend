@@ -12,7 +12,7 @@ const readQuery = (query) => {
   }
 };
 
-export const checkAccessToken = (props) => {
+export const checkAccessToken = (location) => {
   const getNewToken = (search) => {
     const query = readQuery(search);
     try {
@@ -31,9 +31,9 @@ export const checkAccessToken = (props) => {
       return true;
     } catch (err) {
       console.log(err);
-      return getNewToken(props?.location?.search);
+      return getNewToken(location?.search);
     }
   } else if (!accessToken) {
-    return getNewToken(props?.location?.search);
+    return getNewToken(location?.search);
   }
 };

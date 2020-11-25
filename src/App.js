@@ -2,7 +2,8 @@ import React from "react";
 import "./App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Main } from "./pages/Main";
-import { BrowserRouter as Router, Route } from "react-router-dom";
+import { Redirect, BrowserRouter as Router, Route } from "react-router-dom";
+import { checkAccessToken } from "./util/authUtils";
 
 function App() {
   // Google Analytics
@@ -20,7 +21,19 @@ function App() {
 
   return (
     <Router>
-      <Route path="/" component={Main} />
+      <Route path="/course/:courseIDs?">
+        <Main />
+      </Route>
+      <Route path="/fce/:courseIDs?">
+        {checkAccessToken() ? (
+          <Main fce/>
+        ) : (
+          <Redirect to="/course" />
+        )}
+      </Route>
+      <Route exact path="/">
+        <Redirect to="/course" />
+      </Route>
     </Router>
   );
 }
