@@ -17,7 +17,10 @@ export const Main = (props) => {
   const [logoutError, setLogoutError] = useState(false);
 
   if (location.search) {
-    console.log(history);
+    history.push("/course");
+  }
+
+  if (props.fce && !loggedIn) {
     history.push("/course");
   }
 

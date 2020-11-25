@@ -3,7 +3,6 @@ import "./App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Main } from "./pages/Main";
 import { Redirect, BrowserRouter as Router, Route } from "react-router-dom";
-import { checkAccessToken } from "./util/authUtils";
 
 function App() {
   // Google Analytics
@@ -25,11 +24,7 @@ function App() {
         <Main />
       </Route>
       <Route path="/fce/:courseIDs?">
-        {checkAccessToken() ? (
-          <Main fce/>
-        ) : (
-          <Redirect to="/course" />
-        )}
+        <Main fce/>
       </Route>
       <Route exact path="/">
         <Redirect to="/course" />
