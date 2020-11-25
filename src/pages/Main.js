@@ -1,21 +1,27 @@
 import React, { useState } from "react";
 import LoginButton from "../components/LoginButton";
-import { Row, Col, Container, Spinner, Alert } from "react-bootstrap";
+import { Row, Col, Container, Spinner, Alert, Button } from "react-bootstrap";
 import Info from "../components/Info";
 import { Snackbar } from "@material-ui/core";
-import { useHistory } from "react-router-dom";
+import { useLocation, useHistory, useParams } from "react-router-dom";
 import { checkAccessToken } from "../util/authUtils";
 import { PopupAlert } from "../components/Alert";
 
 export const Main = (props) => {
   const history = useHistory();
-  const [loggedIn, setLoggedIn] = useState(checkAccessToken(props));
+  const location = useLocation();
+  const { courseIDs } = useParams();
+  const [loggedIn, setLoggedIn] = useState(checkAccessToken(location));
   const [loading, setLoading] = useState(false);
   const [loginError, setLoginError] = useState(false);
   const [logoutError, setLogoutError] = useState(false);
 
-  if (props.location.search) {
-    history.push("/");
+  if (location.search) {
+    history.push("/course");
+  }
+
+  if (props.fce && !loggedIn) {
+    history.push("/course");
   }
 
   const handleCloseLoginError = (event, reason) => {
@@ -28,7 +34,7 @@ export const Main = (props) => {
 
   return (
     <div className="App">
-      <Container className="pb-5">
+      <Container className="pb-5 content">
         <Alert variant="warning" className="mt-3">
           We have received feedback regarding the availability of Spring 2020
           FCEs and are working to add them as soon as possible. Meanwhile, feel
@@ -74,9 +80,22 @@ export const Main = (props) => {
             <span className="sr-only">Loading...</span>
           </Spinner>
         ) : (
-          <Info loggedIn={loggedIn} loading={loading} />
+          <Info
+            loggedIn={loggedIn}
+            loading={loading}
+            fce={props.fce}
+            courseIDs={courseIDs}
+          />
         )}
       </Container>
+      <div className="footer text-muted pt-3">
+        <Container>
+          <ul class="list-inline">
+            <li class="list-inline-item h5"><a href="https://scottylabs.org">ScottyLabs</a> Course Tool</li>
+            <li class="list-inline-item ml-3"><a href="/privacy">Privacy</a></li>
+          </ul>
+        </Container>
+      </div>
     </div>
   );
 };

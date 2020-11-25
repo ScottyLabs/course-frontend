@@ -1,15 +1,5 @@
-import React, { useContext } from "react";
-import {
-  Accordion,
-  AccordionContext,
-  useAccordionToggle,
-  Button,
-  Container,
-  Card,
-  Row,
-  Col,
-  Badge,
-} from "react-bootstrap";
+import React from "react";
+import { Accordion, Container, Card, Row, Col, Badge } from "react-bootstrap";
 import { useSelector } from "react-redux";
 import { CustomToggle } from "./CustomToggle";
 

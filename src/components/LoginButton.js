@@ -1,13 +1,23 @@
 import React from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Button } from "react-bootstrap";
+import { useHistory } from "react-router-dom";
 
 const LoginButton = (props) => {
+  const history = useHistory();
+
   const logout = () => {
     window.localStorage.removeItem("accessToken");
     props.setState.setLoading(true);
     props.setState.setLoggedIn(false);
     props.setState.setLoading(false);
+    // Check if currently on FCE page
+    if (
+      history.location.pathname &&
+      history.location.pathname.includes("/fce")
+    ) {
+      history.push("/course");
+    }
   };
 
   return (

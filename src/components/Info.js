@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Form,
   Row,
@@ -21,6 +21,7 @@ import * as actions from "../actions";
 import { Snackbar } from "@material-ui/core";
 import { PopupAlert } from "./Alert";
 import axios from "axios";
+import { useHistory } from "react-router-dom";
 
 const BASE_URL = process.env.REACT_APP_API_URL;
 const axiosInstance = axios.create({
@@ -32,11 +33,12 @@ const axiosInstance = axios.create({
 
 const Info = (props) => {
   const dispatch = useDispatch();
+  const history = useHistory();
 
   const [courseID, setCourseID] = useState("");
   const [fceMode, setFCEMode] = useState((prev) => {
-    if (!prev || (prev == true && !props.loggedIn)) {
-      return false;
+    if (!prev || (prev === true && !props.loggedIn)) {
+      return false || props.fce;
     }
     return true;
   });
@@ -50,10 +52,10 @@ const Info = (props) => {
       const courseData = [];
       for (const courseID of courseIDs) {
         const response = await axiosInstance.get(url + courseID);
-        if (response.status == 200) {
+        if (response.status === 200) {
           const data = response.data;
           courseData.push(data);
-        } else if (response.status == 404) {
+        } else if (response.status === 404) {
           setNotFound(true);
         } else {
           setError(true);
@@ -66,16 +68,17 @@ const Info = (props) => {
       console.log(e);
     }
   };
+
   const queryFCE = async (courseIDs) => {
     const url = BASE_URL + "/fces/courseID/";
     try {
       const fceData = [];
       for (const courseID of courseIDs) {
         const response = await axiosInstance.get(url + courseID);
-        if (response.status == 200) {
+        if (response.status === 200) {
           const data = response.data;
           fceData.push(data);
-        } else if (response.status == 404) {
+        } else if (response.status === 404) {
           setNotFound(true);
         } else {
           setError(true);
@@ -99,10 +102,37 @@ const Info = (props) => {
     queryFCE(courseIDs);
     queryCourse(courseIDs);
     dispatch(actions.info.setCourseIDs(courseIDs));
+
+    let redirectURL;
+    if (history.location.pathname.includes("/course")) {
+      redirectURL = "/course/" + encodeURIComponent(courseID);
+    } else {
+      redirectURL = "/fce/" + encodeURIComponent(courseID);
+    }
+    history.push(redirectURL);
   };
 
   const handleSwitch = (e) => {
     setFCEMode(e.target.value === "true");
+    let searchParams = "";
+    const patharray = history.location.pathname.split("/");
+    if (patharray.length > 2) {
+      searchParams = patharray[2];
+    }
+
+    if (e.target.value === "true") {
+      if (searchParams.length > 0) {
+        history.push("/fce/" + encodeURIComponent(searchParams));
+      } else {
+        history.push("/fce");
+      }
+    } else {
+      if (searchParams.length > 0) {
+        history.push("/course/" + encodeURIComponent(searchParams));
+      } else {
+        history.push("/course");
+      }
+    }
   };
 
   const handleCloseNotFound = (event, reason) => {
@@ -113,6 +143,16 @@ const Info = (props) => {
     setError(false);
     setErrorMessage("An error occured!");
   };
+
+  useEffect(() => {
+    if (props.courseIDs) {
+      const courseIDs = props.courseIDs.split(" ");
+      queryFCE(courseIDs);
+      queryCourse(courseIDs);
+      dispatch(actions.info.setCourseIDs(courseIDs));
+      setCourseID(props.courseIDs);
+    }
+  }, []);
 
   return props.loading ? (
     <div></div>
@@ -143,7 +183,7 @@ const Info = (props) => {
               <ToggleButtonGroup
                 type="radio"
                 name="fceToggle"
-                defaultValue="false"
+                defaultValue={fceMode ? "true" : "false"}
               >
                 <ToggleButton
                   variant="outline-primary"

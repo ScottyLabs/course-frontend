@@ -76,7 +76,7 @@ const FCEForm = () => {
     <>
       <Row className="mt-1">
         <Col md={4}>
-          <h6>Semesters</h6>
+          <h6 className="fce-semester">Semesters</h6>
         </Col>
         <Col md={4}>
           <FormGroup row>

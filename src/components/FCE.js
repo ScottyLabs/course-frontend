@@ -12,6 +12,8 @@ import { useSelector } from "react-redux";
 import { CustomToggle } from "./CustomToggle";
 import Rating from "@material-ui/lab/Rating";
 import StarBorderIcon from "@material-ui/icons/StarBorder";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faExclamationTriangle } from "@fortawesome/free-solid-svg-icons";
 
 const getAverages = (collatedData) => {
   if (!collatedData || collatedData.length === 0) return 0;
@@ -119,7 +121,7 @@ const trimFCEData = (courses, query) => {
   for (const data of courses) {
     let semesterCount = Number.parseInt(query?.semesterCount);
     if (isNaN(semesterCount)) semesterCount = 2;
-    const instructor = query?.instructor;
+    // const instructor = query?.instructor;
     const enabledSemesters = query?.semesters;
 
     const fces = [];
@@ -136,7 +138,7 @@ const trimFCEData = (courses, query) => {
           if (fce.section === "W") return;
           fce["year"] = year.year;
           fce["semester"] = label;
-          if (fce.hrsPerWeek != 0) {
+          if (fce.hrsPerWeek !== 0) {
             fces.push(fce);
             found = true;
           }
@@ -159,6 +161,10 @@ const getHoursColor = (hours) => {
 };
 
 const FCESummary = (props) => {
+  const count = Math.max.apply(
+    Math,
+    props.data.semesterCounts.map((x) => x.count)
+  );
   return (
     <Row className="mt-3 mx-0">
       <Accordion defaultActiveKey="0" className="w-100">
@@ -182,9 +188,15 @@ const FCESummary = (props) => {
               <Row>
                 <Col>
                   <p className="lead">
-                    Data collated across <strong>{props.data.semesters}</strong>{" "}
-                    semesters
+                    Data collated across <strong>{count}</strong> semesters{" "}
                   </p>
+                  {count < props.data.semesters ? (
+                    <p>
+                      <FontAwesomeIcon icon={faExclamationTriangle} /> Unable to
+                      retrieve data from at least {props.data.semesters - count}{" "}
+                      semesters!
+                    </p>
+                  ) : null}
                 </Col>
               </Row>
             </Container>
@@ -196,6 +208,7 @@ const FCESummary = (props) => {
 };
 
 const FCERow = (props) => {
+  console.log(props.key);
   return (
     <Row className="mt-3 mx-0">
       <Accordion defaultActiveKey="0" className="w-100">
@@ -280,9 +293,16 @@ const FCERow = (props) => {
               <Row>
                 <Col>
                   <p className="lead">
-                    Data collated across <strong>{props.semesters}</strong>{" "}
-                    semesters
+                    Data collated across{" "}
+                    <strong>{props.data.semesterCount}</strong> semesters{" "}
                   </p>
+                  {props.data.semesterCount < props.semesters ? (
+                    <p>
+                      <FontAwesomeIcon icon={faExclamationTriangle} /> Unable to
+                      retrieve data from at least{" "}
+                      {props.semesters - props.data.semesterCount} semesters!
+                    </p>
+                  ) : null}
                 </Col>
               </Row>
             </Container>
@@ -315,9 +335,15 @@ const FCE = () => {
   const averageHrs = averages.hours;
 
   const courseInfo = [];
+  const countObjects = [];
   for (const course of collatedData) {
     const averages = getAverages([course]);
     const [courseName, courseDept] = getCourseInfo(course.courseID, courseData);
+    const semesterCount = [
+      ...new Set(
+        course.fces.map((x) => x.year.toString() + x.semester.toString())
+      ),
+    ].length;
     const entry = {
       courseID: course.courseID,
       courseName: courseName,
@@ -326,13 +352,16 @@ const FCE = () => {
       avgTeachingRate: averages.teachingRate,
       avgCourseRate: averages.courseRate,
       fces: course.fces,
+      semesterCount: semesterCount,
     };
     courseInfo.push(entry);
+    countObjects.push({ courseID: course.courseID, count: semesterCount });
   }
   const data = {
     totalHrs: averageHrs,
     courseData: courseInfo,
     semesters: fceQuery.semesterCount,
+    semesterCounts: countObjects,
   };
   const rows = [];
   let id = 0;
