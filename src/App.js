@@ -24,7 +24,7 @@ function App() {
         <Main />
       </Route>
       <Route path="/fce/:courseIDs?">
-        <Main fce/>
+        <Main fce />
       </Route>
       <Route exact path="/">
         <Redirect to="/course" />

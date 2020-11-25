@@ -1,18 +1,18 @@
-export const setCourseIDs = (courseIDs) => {
+const setCourseIDs = (courseIDs) => {
   return {
     type: "SET_COURSE_IDs",
     courseIDs: courseIDs,
   };
 };
 
-export const setCourseData = (courseData) => {
+const setCourseData = (courseData) => {
   return {
     type: "SET_COURSE_DATA",
     courseData: courseData,
   };
 };
 
-export const setFCEData = (fceData) => {
+const setFCEData = (fceData) => {
   return {
     type: "SET_FCE_DATA",
     fceData: fceData,

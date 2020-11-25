@@ -115,11 +115,11 @@ const Info = (props) => {
   const handleSwitch = (e) => {
     setFCEMode(e.target.value === "true");
     let searchParams = "";
-    const patharray = history.location.pathname.split("/")
+    const patharray = history.location.pathname.split("/");
     if (patharray.length > 2) {
       searchParams = patharray[2];
     }
-    
+
     if (e.target.value === "true") {
       if (searchParams.length > 0) {
         history.push("/fce/" + encodeURIComponent(searchParams));
