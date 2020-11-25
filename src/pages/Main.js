@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import LoginButton from "../components/LoginButton";
-import { Row, Col, Container, Spinner, Alert } from "react-bootstrap";
+import { Row, Col, Container, Spinner, Alert, Button } from "react-bootstrap";
 import Info from "../components/Info";
 import { Snackbar } from "@material-ui/core";
 import { useLocation, useHistory, useParams } from "react-router-dom";
@@ -34,7 +34,7 @@ export const Main = (props) => {
 
   return (
     <div className="App">
-      <Container className="pb-5">
+      <Container className="pb-5 content">
         <Alert variant="warning" className="mt-3">
           We have received feedback regarding the availability of Spring 2020
           FCEs and are working to add them as soon as possible. Meanwhile, feel
@@ -88,6 +88,14 @@ export const Main = (props) => {
           />
         )}
       </Container>
+      <div className="footer text-muted pt-3">
+        <Container>
+          <ul class="list-inline">
+            <li class="list-inline-item h5"><a href="https://scottylabs.org">ScottyLabs</a> Course Tool</li>
+            <li class="list-inline-item ml-3"><a href="/privacy">Privacy</a></li>
+          </ul>
+        </Container>
+      </div>
     </div>
   );
 };

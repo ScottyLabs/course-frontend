@@ -1,11 +1,14 @@
 html {
-  overflow-y: scroll;
+  overflow: overlay;
+  position: relative;
+  min-height: 100%;
 }
 
 ::-webkit-scrollbar {
   width: 25px; /* Total width including `border-width` of scrollbar thumb */
   height: 0;
 }
+
 ::-webkit-scrollbar-thumb {
   height: 1em;
   border: 8px solid rgba(0, 0, 0, 0);
@@ -19,4 +22,18 @@ html {
 
 .fce-semester {
   margin-top: 10px;
+}
+
+.content {
+  /* Margin bottom by footer height */
+  margin-bottom: 55px;
+}
+
+.footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  /* Set the fixed height of the footer here */
+  height: 55px;
+  background-color: #f5f5f5;
 }

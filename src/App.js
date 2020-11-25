@@ -2,6 +2,7 @@ import React from "react";
 import "./App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Main } from "./pages/Main";
+import { Privacy } from "./pages/Privacy";
 import { Redirect, BrowserRouter as Router, Route } from "react-router-dom";
 
 function App() {
@@ -25,6 +26,9 @@ function App() {
       </Route>
       <Route path="/fce/:courseIDs?">
         <Main fce />
+      </Route>
+      <Route path="/privacy">
+        <Privacy />
       </Route>
       <Route exact path="/">
         <Redirect to="/course" />
