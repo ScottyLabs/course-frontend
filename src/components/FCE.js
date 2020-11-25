@@ -7,8 +7,6 @@ import {
   Card,
   Badge,
   Container,
-  OverlayTrigger,
-  Tooltip,
 } from "react-bootstrap";
 import { useSelector } from "react-redux";
 import { CustomToggle } from "./CustomToggle";
@@ -191,20 +189,14 @@ const FCESummary = (props) => {
                 <Col>
                   <p className="lead">
                     Data collated across <strong>{count}</strong> semesters{" "}
-                    {count < props.data.semesters ? (
-                      <OverlayTrigger
-                        placement={"right"}
-                        overlay={
-                          <Tooltip id={"warning-summary"}>
-                            Unable to retrieve data from at least{" "}
-                            {props.data.semesters - count} semesters!
-                          </Tooltip>
-                        }
-                      >
-                        <FontAwesomeIcon icon={faExclamationTriangle} />
-                      </OverlayTrigger>
-                    ) : null}
                   </p>
+                  {count < props.data.semesters ? (
+                    <p>
+                      <FontAwesomeIcon icon={faExclamationTriangle} /> Unable to
+                      retrieve data from at least {props.data.semesters - count}{" "}
+                      semesters!
+                    </p>
+                  ) : null}
                 </Col>
               </Row>
             </Container>
@@ -216,7 +208,7 @@ const FCESummary = (props) => {
 };
 
 const FCERow = (props) => {
-  console.log(props.data);
+  console.log(props.key);
   return (
     <Row className="mt-3 mx-0">
       <Accordion defaultActiveKey="0" className="w-100">
@@ -303,21 +295,14 @@ const FCERow = (props) => {
                   <p className="lead">
                     Data collated across{" "}
                     <strong>{props.data.semesterCount}</strong> semesters{" "}
-                    {props.data.semesterCount < props.semesters ? (
-                      <OverlayTrigger
-                        placement={"right"}
-                        overlay={
-                          <Tooltip id={"warning-" + props.key}>
-                            Unable to retrieve data from{" "}
-                            {props.semesters - props.data.semesterCount}{" "}
-                            semesters!
-                          </Tooltip>
-                        }
-                      >
-                        <FontAwesomeIcon icon={faExclamationTriangle} />
-                      </OverlayTrigger>
-                    ) : null}
                   </p>
+                  {props.data.semesterCount < props.semesters ? (
+                    <p>
+                      <FontAwesomeIcon icon={faExclamationTriangle} /> Unable to
+                      retrieve data from at least{" "}
+                      {props.semesters - props.data.semesterCount} semesters!
+                    </p>
+                  ) : null}
                 </Col>
               </Row>
             </Container>
