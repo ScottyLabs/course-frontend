@@ -75,9 +75,14 @@ const Info = (props) => {
       const fceData = [];
       for (const courseID of courseIDs) {
         const response = await axiosInstance.get(url + courseID);
+        console.log(response)
         if (response.status === 200) {
           const data = response.data;
-          fceData.push(data);
+          let course = { courseID: courseID, data: [] };
+          for (const row of data) {
+            course.data.push(row);
+          }
+          fceData.push(course);
         } else if (response.status === 404) {
           setNotFound(true);
         } else {

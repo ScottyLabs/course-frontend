@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import LoginButton from "../components/LoginButton";
-import { Row, Col, Container, Spinner, Alert, Button } from "react-bootstrap";
+import { Row, Col, Container, Spinner } from "react-bootstrap";
 import Info from "../components/Info";
 import { Snackbar } from "@material-ui/core";
 import { useLocation, useHistory, useParams } from "react-router-dom";
@@ -35,11 +35,6 @@ export const Main = (props) => {
   return (
     <div className="App">
       <Container className="pb-5 content">
-        <Alert variant="warning" className="mt-3">
-          We have received feedback regarding the availability of Spring 2020
-          FCEs and are working to add them as soon as possible. Meanwhile, feel
-          free to query data from 2019 and earlier. Stay safe!
-        </Alert>
         <Row className="my-3">
           <Col>
             <h2>ScottyLabs Course Tool</h2>
