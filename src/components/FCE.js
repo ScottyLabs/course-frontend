@@ -43,11 +43,9 @@ const getAverages = (collatedData) => {
 };
 
 const FCETable = (data) => {
-  console.log(data);
-  const fces = data.data.fces;
   const rows = [];
   let i = 0;
-  for (const semester of fces) {
+  for (const semester of data.data.fces) {
     const teachingRate = semester.rating[7];
     const courseRate = semester.rating[8];
     const row = (
@@ -116,6 +114,14 @@ const CourseTable = (data) => {
   );
 };
 
+const standardizeID = (id) => {
+  if (!id.includes('-') && id.length >= 5) {
+    let newString = id.slice(0, 2) + '-' + id.slice(2);
+    return newString;
+  }
+  return id;
+}
+
 const trimFCEData = (courses, query) => {
   const collatedData = [];
   for (const data of courses) {
@@ -124,31 +130,32 @@ const trimFCEData = (courses, query) => {
     // const instructor = query?.instructor;
     const enabledSemesters = query?.semesters;
 
-    const fces = [];
-    let semCount = 0;
-
-    data.fce.every((year) => {
-      let labels = ["fall", "summer", "spring"];
-      for (const label of labels) {
-        if (!year[label]) continue;
-        if (!enabledSemesters[label]) continue;
-        let found = false;
-        year[label].forEach((fce) => {
-          // Skip CMU Qatar sections
-          if (fce.section === "W") return;
-          fce["year"] = year.year;
-          fce["semester"] = label;
-          if (fce.hrsPerWeek !== 0) {
-            fces.push(fce);
-            found = true;
-          }
-        });
-        if (found) semCount++;
-        if (semCount >= semesterCount) return false;
+    let fces = [];
+    let semesters = [];
+    let fceData = data.data.sort((a, b) => {
+      const semesters = ["spring", "summer", "fall"];
+      if (a.year === b.year) {
+        if (semesters.indexOf(a.semester) < semesters.indexOf(b.semester)) {
+          return 1;
+        } else if (semesters.indexOf(a.semester) > semesters.indexOf(b.semester)) {
+          return -1;
+        } else {
+          return 0;
+        }
+      } else {
+        return (a.year < b.year) ? 1 : -1;
       }
-      return true;
     });
-    collatedData.push({ courseID: data.courseID, fces: fces });
+    console.log(fceData)
+    for (const semData of fceData) {
+      if (!enabledSemesters[semData.semester]) continue;
+      if (!semesters.includes(semData.semester + semData.year)) {
+        semesters.push(semData.semester + semData.year);
+        if (semesters.length > semesterCount) break;
+      }
+      fces.push(semData);
+    }
+    collatedData.push({ courseID: standardizeID(data.courseID), fces: fces });
   }
   return collatedData;
 };
@@ -208,7 +215,6 @@ const FCESummary = (props) => {
 };
 
 const FCERow = (props) => {
-  console.log(props.key);
   return (
     <Row className="mt-3 mx-0">
       <Accordion defaultActiveKey="0" className="w-100">
