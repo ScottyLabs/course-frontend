@@ -69,13 +69,26 @@ const Info = (props) => {
     }
   };
 
+  const querySchedule = async (courseIDs) => {
+    const url = BASE_URL + "/schedules";
+    try {
+      const query = {
+        courseID: courseIDs
+      };
+      const response = await axiosInstance.get(url, { params: query });
+      dispatch(actions.info.setScheduleData(response.data));
+    } catch (e) {
+      setError(true);
+      console.log(e);
+    }
+  };
+
   const queryFCE = async (courseIDs) => {
     const url = BASE_URL + "/fces/courseID/";
     try {
       const fceData = [];
       for (const courseID of courseIDs) {
         const response = await axiosInstance.get(url + courseID);
-        console.log(response)
         if (response.status === 200) {
           const data = response.data;
           let course = { courseID: courseID, data: [] };
@@ -106,6 +119,7 @@ const Info = (props) => {
     const courseIDs = courseID.split(" ");
     queryFCE(courseIDs);
     queryCourse(courseIDs);
+    querySchedule(courseIDs);
     dispatch(actions.info.setCourseIDs(courseIDs));
 
     let redirectURL;

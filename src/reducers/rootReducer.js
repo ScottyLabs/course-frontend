@@ -39,6 +39,11 @@ const rootReducer = (state = initState, action) => {
       ...state,
       fceData: action.fceData,
     };
+  } else if (action.type === "SET_SCHEDULE_DATA") {
+    return {
+      ...state,
+      scheduleData: action.scheduleData,
+    }
   } else if (action.type === "SET_SEMESTERS") {
     return {
       ...state,

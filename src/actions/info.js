@@ -19,8 +19,16 @@ const setFCEData = (fceData) => {
   };
 };
 
+const setScheduleData = (scheduleData) => {
+  return {
+    type: "SET_SCHEDULE_DATA",
+    scheduleData: scheduleData,
+  };
+};
+
 export default {
   setCourseIDs,
   setCourseData,
   setFCEData,
+  setScheduleData,
 };
