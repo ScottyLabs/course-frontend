@@ -28,8 +28,8 @@
     "redux": "^4.0.5"
   },
   "scripts": {
-    "start": "node server.js",
-    "dev": "react-scripts start",
+    "start": "doppler run -- node server.js",
+    "dev": "doppler run -- react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
