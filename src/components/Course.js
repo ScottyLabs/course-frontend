@@ -2,8 +2,41 @@ import React from "react";
 import { Accordion, Container, Card, Row, Col, Badge } from "react-bootstrap";
 import { useSelector } from "react-redux";
 import { CustomToggle } from "./CustomToggle";
+import rsreplace from "react-string-replace";
+import { Button } from "react-bootstrap";
+import { useHistory } from "react-router-dom";
+
+const courseIDLinker = (text, history) => {
+  const handleLinkClick = (id) => {
+    console.log(history.location)
+    let newLocation = {};
+    const pathname = history.location.pathname;
+    if (pathname.match(/\d/g)) {
+      newLocation.pathname = pathname + " " + id;
+    } else if (pathname[pathname.length - 1] === "/") {
+      newLocation.pathname = pathname + id;
+    } else {
+      newLocation.pathname = pathname + "/" + id;
+    }
+    history.push(newLocation);
+    history.go(0);
+  }
+
+  return rsreplace(text, /(\d{2}-\d{3}|\d{5})/gm, (match, index, offset) => {
+    if (match.match(/\d{5}/gm)) {
+      match = match.slice(0, 2) + "-" + match.slice(2, 5);
+    }
+    return (
+      <Button onClick={() => handleLinkClick(match)} as={Badge} pill variant="info">
+        {match}
+      </Button>
+    );
+  });
+};
 
 const CourseRow = (props) => {
+  const history = useHistory();
+
   const courseData = props.data;
   console.log(courseData);
   let prereqs = "none";
@@ -31,7 +64,7 @@ const CourseRow = (props) => {
               <Row className="mt-3">
                 <Col>
                   <h5>Description</h5>
-                  <p>{courseData.desc}</p>
+                  <p>{courseIDLinker(courseData.desc, history)}</p>
                 </Col>
               </Row>
               <Row className="mt-4">
