@@ -47,6 +47,20 @@ const rootReducer = (state = initState, action) => {
         semesters: action.semesters,
       },
     };
+  } else if (action.type === "ADD_COURSE_DATA") {
+    return {
+      ...state,
+      courseData: state.courseData
+        ? [action.courseData, ...state.courseData]
+        : action.courseData,
+    };
+  } else if (action.type === "ADD_FCE_DATA") {
+    return {
+      ...state,
+      fceData: state.fceData
+        ? [action.fceData, ...state.fceData]
+        : action.fceData,
+    };
   }
   return state;
 };

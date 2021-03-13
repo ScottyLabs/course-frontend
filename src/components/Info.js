@@ -75,7 +75,6 @@ const Info = (props) => {
       const fceData = [];
       for (const courseID of courseIDs) {
         const response = await axiosInstance.get(url + courseID);
-        console.log(response)
         if (response.status === 200) {
           const data = response.data;
           let course = { courseID: courseID, data: [] };
@@ -164,50 +163,58 @@ const Info = (props) => {
   ) : (
     <>
       <Row>
-        <Col md={8}>
+        <Col>
           <Form onSubmit={handleFormSubmit}>
             <h5>Course IDs</h5>
-            <ButtonToolbar
-              className="mb-3"
-              aria-label="Toolbar with Button groups"
-            >
-              <InputGroup className="mr-3">
-                <FormControl
-                  placeholder="e.g. 21127 15-112"
-                  aria-label="Course ID"
-                  aria-describedby="course-id"
-                  value={courseID}
-                  onChange={handleFieldChange}
-                />
-                <InputGroup.Append>
-                  <Button variant="outline-secondary" type="submit">
-                    <FontAwesomeIcon icon={faSearch} />
-                  </Button>
-                </InputGroup.Append>
-              </InputGroup>
-              <ToggleButtonGroup
-                type="radio"
-                name="fceToggle"
-                defaultValue={fceMode ? "true" : "false"}
-              >
-                <ToggleButton
-                  variant="outline-primary"
-                  value="false"
-                  onChange={handleSwitch}
+            <Row>
+              <Col md={8}>
+                <InputGroup className="mr-2">
+                  <FormControl
+                    placeholder="e.g. 21127 15-112"
+                    aria-label="Course ID"
+                    aria-describedby="course-id"
+                    value={courseID}
+                    onChange={handleFieldChange}
+                  />
+                  <InputGroup.Append>
+                    <Button variant="outline-secondary" type="submit">
+                      <FontAwesomeIcon icon={faSearch} />
+                    </Button>
+                  </InputGroup.Append>
+                </InputGroup>
+              </Col>
+              <Col md="auto">
+                <ButtonToolbar
+                  className="mb-3"
+                  aria-label="Toolbar with Button groups"
                 >
-                  Course
-                </ToggleButton>
-                <ToggleButton
-                  disabled={!props.loggedIn}
-                  variant="outline-primary"
-                  value="true"
-                  onChange={handleSwitch}
-                >
-                  {props.loggedIn ? null : <FontAwesomeIcon icon={faLock} />}{" "}
-                  FCE
-                </ToggleButton>
-              </ToggleButtonGroup>
-            </ButtonToolbar>
+                  <ToggleButtonGroup
+                    type="radio"
+                    name="fceToggle"
+                    defaultValue={fceMode ? "true" : "false"}
+                  >
+                    <ToggleButton
+                      variant="outline-primary"
+                      value="false"
+                      onChange={handleSwitch}
+                    >
+                      Course
+                    </ToggleButton>
+                    <ToggleButton
+                      disabled={!props.loggedIn}
+                      variant="outline-primary"
+                      value="true"
+                      onChange={handleSwitch}
+                    >
+                      {props.loggedIn ? null : (
+                        <FontAwesomeIcon icon={faLock} />
+                      )}{" "}
+                      FCE
+                    </ToggleButton>
+                  </ToggleButtonGroup>
+                </ButtonToolbar>
+              </Col>
+            </Row>
           </Form>
         </Col>
       </Row>
@@ -227,7 +234,7 @@ const Info = (props) => {
       </Snackbar>
       {fceMode ? <FCEForm /> : null}
       {fceMode ? <FCE /> : null}
-      {fceMode ? null : <Course />}
+      {fceMode ? null : <Course courseID={[courseID, setCourseID]} />}
     </>
   );
 };
