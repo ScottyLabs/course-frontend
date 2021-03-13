@@ -2,6 +2,7 @@
   "name": "courseinfo",
   "version": "0.2.2",
   "private": true,
+  "type": "module",
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^1.2.32",
     "@fortawesome/free-solid-svg-icons": "^5.15.1",
@@ -25,6 +26,7 @@
     "react-redux": "^7.2.2",
     "react-router-dom": "^5.2.0",
     "react-scripts": "^4.0.1",
+    "react-string-replace": "^0.4.4",
     "redux": "^4.0.5"
   },
   "scripts": {
