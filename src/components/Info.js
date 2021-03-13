@@ -234,7 +234,16 @@ const Info = (props) => {
       </Snackbar>
       {fceMode ? <FCEForm /> : null}
       {fceMode ? <FCE /> : null}
-      {fceMode ? null : <Course courseID={[courseID, setCourseID]} />}
+      {fceMode ? null : (
+        <Course
+        courseID={[courseID, setCourseID]}
+        errorHandler={[
+          setError,
+          setErrorMessage,
+          setNotFound,
+        ]}
+        />
+      )}
     </>
   );
 };

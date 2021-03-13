@@ -32,6 +32,7 @@ const CourseRow = (props) => {
   const dispatch = useDispatch();
 
   const [search, setSearch] = props.courseID;
+  const [setError, setErrorMessage, setNotFound] = props.errorHandler;
 
   const courseData = props.data;
   let prereqs = "none";
@@ -54,15 +55,15 @@ const CourseRow = (props) => {
         const data = response.data;
         courseData.push(data);
       }
-      //   } else if (response.status === 404) {
-      //     setNotFound(true);
-      //   } else {
-      //     setError(true);
-      //     setErrorMessage("Unknown course ID: " + courseID);
-      //   }
+      else if (response.status === 404) {
+        setNotFound(true);
+      } else {
+        setError(true);
+        setErrorMessage("Unknown course ID: " + courseID);
+      }
       dispatch(actions.info.addCourseData(courseData));
     } catch (e) {
-      //setError(true);
+      setError(true);
       console.log(e);
     }
   };
@@ -79,16 +80,16 @@ const CourseRow = (props) => {
           course.data.push(row);
         }
         fceData.push(course);
-        //else if (response.status === 404) {
-        //   setNotFound(true);
-        // } else {
-        //   setError(true);
-        //   setErrorMessage("Unknown course ID: " + courseID);
-        // }
+      }
+      else if (response.status === 404) {
+        setNotFound(true);
+      } else {
+        setError(true);
+        setErrorMessage("Unknown course ID: " + courseID);
       }
       dispatch(actions.info.addFCEData(fceData));
     } catch (e) {
-      //setError(true);
+      setError(true);
       console.log(e);
     }
   };
@@ -142,7 +143,7 @@ const CourseRow = (props) => {
               <Row className="mt-3">
                 <Col>
                   <h5>Description</h5>
-                  <p>{courseData.desc}</p>
+                  <p>{courseIDLinker(courseData.desc, history)}</p>
                 </Col>
               </Row>
               <Row className="mt-4">
@@ -172,7 +173,12 @@ const Course = (props) => {
   let id = 0;
   for (const course of courseData) {
     rows.push(
-      <CourseRow data={course} key={id++} courseID={props.courseID} />
+      <CourseRow
+        data={course}
+        key={id++}
+        courseID={props.courseID}
+        errorHandler={props.errorHandler}
+      />
     );
   }
   return <>{rows}</>;

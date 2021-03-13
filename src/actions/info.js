@@ -30,12 +30,13 @@ const addFCEData = (fceData) => {
   return {
     type: "ADD_FCE_DATA",
     fceData: fceData[0],
-  }
-}
+  };
+};
 
 export default {
   setCourseIDs,
   setCourseData,
   setFCEData,
   addCourseData,
+  addFCEData,
 };
