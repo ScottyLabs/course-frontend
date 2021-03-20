@@ -115,12 +115,12 @@ const CourseTable = (data) => {
 };
 
 const standardizeID = (id) => {
-  if (!id.includes('-') && id.length >= 5) {
-    let newString = id.slice(0, 2) + '-' + id.slice(2);
+  if (!id.includes("-") && id.length >= 5) {
+    let newString = id.slice(0, 2) + "-" + id.slice(2);
     return newString;
   }
   return id;
-}
+};
 
 const trimFCEData = (courses, query) => {
   const collatedData = [];
@@ -137,16 +137,17 @@ const trimFCEData = (courses, query) => {
       if (a.year === b.year) {
         if (semesters.indexOf(a.semester) < semesters.indexOf(b.semester)) {
           return 1;
-        } else if (semesters.indexOf(a.semester) > semesters.indexOf(b.semester)) {
+        } else if (
+          semesters.indexOf(a.semester) > semesters.indexOf(b.semester)
+        ) {
           return -1;
         } else {
           return 0;
         }
       } else {
-        return (a.year < b.year) ? 1 : -1;
+        return a.year < b.year ? 1 : -1;
       }
     });
-    console.log(fceData)
     for (const semData of fceData) {
       if (!enabledSemesters[semData.semester]) continue;
       if (!semesters.includes(semData.semester + semData.year)) {

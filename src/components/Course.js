@@ -1,53 +1,132 @@
 import React from "react";
 import { Accordion, Container, Card, Row, Col, Badge } from "react-bootstrap";
-import { useSelector } from "react-redux";
+import { useSelector } from "react-redux"; //for redux state retrieval
 import { CustomToggle } from "./CustomToggle";
 import rsreplace from "react-string-replace";
 import { Button } from "react-bootstrap";
 import { useHistory } from "react-router-dom";
+import axios from "axios";
+import { useDispatch } from "react-redux";
+import * as actions from "../actions";
 
-const courseIDLinker = (text, history) => {
-  const handleLinkClick = (id) => {
-    console.log(history.location)
-    let newLocation = {};
-    const pathname = history.location.pathname;
-    if (pathname.match(/\d/g)) {
-      newLocation.pathname = pathname + " " + id;
-    } else if (pathname[pathname.length - 1] === "/") {
-      newLocation.pathname = pathname + id;
-    } else {
-      newLocation.pathname = pathname + "/" + id;
-    }
-    history.push(newLocation);
-    history.go(0);
+const BASE_URL = process.env.REACT_APP_API_URL;
+const axiosInstance = axios.create({
+  validateStatus: (status) => true,
+  headers: {
+    "x-access-token": process.env.REACT_APP_API_TOKEN,
+  },
+});
+
+const getCoreq = (coreqs) => {
+  let coreqStr = "";
+  if (coreqs.length === 0) return coreqStr;
+  for (var i = 0; i < coreqs.length - 1; i++) {
+    coreqStr += coreqs[i] + " or ";
   }
-
-  return rsreplace(text, /(\d{2}-\d{3}|\d{5})/gm, (match, index, offset) => {
-    if (match.match(/\d{5}/gm)) {
-      match = match.slice(0, 2) + "-" + match.slice(2, 5);
-    }
-    return (
-      <Button onClick={() => handleLinkClick(match)} as={Badge} pill variant="info">
-        {match}
-      </Button>
-    );
-  });
+  coreqStr += coreqs[coreqs.length - 1];
+  return coreqStr;
 };
 
 const CourseRow = (props) => {
   const history = useHistory();
+  const dispatch = useDispatch();
+
+  const [search, setSearch] = props.courseID;
+  const [setError, setErrorMessage, setNotFound] = props.errorHandler;
 
   const courseData = props.data;
-  console.log(courseData);
   let prereqs = "none";
   if (courseData.prereqs) {
-    prereqs = courseData.prereqs.join(", ");
+    //edit this lol
+    prereqs = courseData.prereqString;
   }
   let coreqs = "none";
   if (courseData.coreqs) {
-    coreqs = courseData.coreqs.join(", ");
+    coreqs = getCoreq(courseData.coreqs);
   }
   const courseID = courseData.courseID;
+
+  const queryCourse = async (courseID) => {
+    const url = BASE_URL + "/courses/courseID/";
+    try {
+      const courseData = [];
+      const response = await axiosInstance.get(url + courseID);
+      if (response.status === 200) {
+        const data = response.data;
+        courseData.push(data);
+      }
+      else if (response.status === 404) {
+        setNotFound(true);
+      } else {
+        setError(true);
+        setErrorMessage("Unknown course ID: " + courseID);
+      }
+      dispatch(actions.info.addCourseData(courseData));
+    } catch (e) {
+      setError(true);
+      console.log(e);
+    }
+  };
+
+  const queryFCE = async (courseID) => {
+    const url = BASE_URL + "/fces/courseID/";
+    try {
+      const fceData = [];
+      const response = await axiosInstance.get(url + courseID);
+      if (response.status === 200) {
+        const data = response.data;
+        let course = { courseID: courseID, data: [] };
+        for (const row of data) {
+          course.data.push(row);
+        }
+        fceData.push(course);
+      }
+      else if (response.status === 404) {
+        setNotFound(true);
+      } else {
+        setError(true);
+        setErrorMessage("Unknown course ID: " + courseID);
+      }
+      dispatch(actions.info.addFCEData(fceData));
+    } catch (e) {
+      setError(true);
+      console.log(e);
+    }
+  };
+
+  const courseIDLinker = (text, history) => {
+    const handleLinkClick = (id) => {
+      let newLocation = {};
+      const pathname = history.location.pathname;
+      if (pathname.match(/\d/g)) {
+        newLocation.pathname = pathname + " " + id;
+      } else if (pathname[pathname.length - 1] === "/") {
+        newLocation.pathname = pathname + id;
+      } else {
+        newLocation.pathname = pathname + "/" + id;
+      }
+      history.push(newLocation);
+      queryCourse(id);
+      queryFCE(id);
+      setSearch(`${search} ${id}`);
+    };
+
+    return rsreplace(text, /(\d{2}-\d{3}|\d{5})/gm, (match, index, offset) => {
+      if (match.match(/\d{5}/gm)) {
+        match = match.slice(0, 2) + "-" + match.slice(2, 5);
+      }
+      return (
+        <Button
+          onClick={() => handleLinkClick(match)}
+          as={Badge}
+          pill
+          variant="info"
+        >
+          {match}
+        </Button>
+      );
+    });
+  };
 
   return (
     <Row className="mt-3 mx-0">
@@ -70,11 +149,11 @@ const CourseRow = (props) => {
               <Row className="mt-4">
                 <Col>
                   <h5>Prerequisites</h5>
-                  <p>{prereqs}</p>
+                  <p>{courseIDLinker(prereqs, history)}</p>
                 </Col>
                 <Col>
                   <h5>Corequisites</h5>
-                  <p>{coreqs}</p>
+                  <p>{courseIDLinker(coreqs, history)}</p>
                 </Col>
               </Row>
             </Container>
@@ -85,14 +164,22 @@ const CourseRow = (props) => {
   );
 };
 
-const Course = () => {
+const Course = (props) => {
   const courseData = useSelector((state) => state.courseData);
+  console.log(courseData);
 
   if (!courseData) return null;
   const rows = [];
   let id = 0;
   for (const course of courseData) {
-    rows.push(<CourseRow data={course} key={id++} />);
+    rows.push(
+      <CourseRow
+        data={course}
+        key={id++}
+        courseID={props.courseID}
+        errorHandler={props.errorHandler}
+      />
+    );
   }
   return <>{rows}</>;
 };
