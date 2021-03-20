@@ -51,7 +51,20 @@ const Info = (props) => {
     try {
       const courseData = [];
       for (const courseID of courseIDs) {
-        const response = await axiosInstance.get(url + courseID);
+        let response = null;
+        if (/^\d+$/.test(courseID)) {
+          response = await axiosInstance.get(url + courseID);
+        }
+        else {
+          response = await axiosInstance.get(BASE_URL + "/courses", {
+            params : {
+              name: courseID
+            }
+          })
+          if (response.data) {
+            response.data = response.data[0]
+          }
+        }
         if (response.status === 200) {
           const data = response.data;
           courseData.push(data);
@@ -102,7 +115,7 @@ const Info = (props) => {
 
   const handleFormSubmit = (e) => {
     e.preventDefault();
-    const courseIDs = courseID.split(" ");
+    const courseIDs = courseID.split(", "); //might need to change this with new search
     queryFCE(courseIDs);
     queryCourse(courseIDs);
     dispatch(actions.info.setCourseIDs(courseIDs));
@@ -150,7 +163,7 @@ const Info = (props) => {
 
   useEffect(() => {
     if (props.courseIDs) {
-      const courseIDs = props.courseIDs.split(" ");
+      const courseIDs = props.courseIDs.split(", ");
       queryFCE(courseIDs);
       queryCourse(courseIDs);
       dispatch(actions.info.setCourseIDs(courseIDs));
@@ -170,7 +183,7 @@ const Info = (props) => {
               <Col md={8}>
                 <InputGroup className="mr-2">
                   <FormControl
-                    placeholder="e.g. 21127 15-112"
+                    placeholder="e.g. 21127, 15-112, Writing about Data"
                     aria-label="Course ID"
                     aria-describedby="course-id"
                     value={courseID}
