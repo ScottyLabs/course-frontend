@@ -233,7 +233,7 @@ const Info = (props) => {
         </PopupAlert>
       </Snackbar>
       {fceMode ? <FCEForm /> : null}
-      {fceMode ? <FCE /> : null}
+      {fceMode ? <FCE search={[courseID, setCourseID]} /> : null}
       {fceMode ? null : (
         <Course
         courseID={[courseID, setCourseID]}

@@ -33,10 +33,26 @@ const addFCEData = (fceData) => {
   };
 };
 
+const removeCourseData = (id) => {
+  return {
+    type: "REMOVE_COURSE_DATA",
+    courseID: id,
+  };
+};
+
+const removeFCEData = (id) => {
+  return {
+    type: "REMOVE_FCE_DATA",
+    courseID: id,
+  };
+};
+
 export default {
   setCourseIDs,
   setCourseData,
   setFCEData,
   addCourseData,
   addFCEData,
+  removeCourseData,
+  removeFCEData,
 };
