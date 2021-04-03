@@ -174,11 +174,11 @@ const CourseRow = (props) => {
               <Row className="mt-4">
                 <Col>
                   <h5>Prerequisites</h5>
-                  <p>{courseIDLinker(prereqs, history)}</p>
+                  <p>{prereqs ? courseIDLinker(prereqs, history) : "None"}</p>
                 </Col>
                 <Col>
                   <h5>Corequisites</h5>
-                  <p>{courseIDLinker(coreqs, history)}</p>
+                  <p>{coreqs ? courseIDLinker(coreqs, history) : "None"}</p>
                 </Col>
               </Row>
             </Container>
