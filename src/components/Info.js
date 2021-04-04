@@ -166,54 +166,49 @@ const Info = (props) => {
         <Col>
           <Form onSubmit={handleFormSubmit}>
             <h5>Course IDs</h5>
-            <Row>
-              <Col md={8}>
-                <InputGroup className="mr-2">
-                  <FormControl
-                    placeholder="e.g. 21127 15-112"
-                    aria-label="Course ID"
-                    aria-describedby="course-id"
-                    value={courseID}
-                    onChange={handleFieldChange}
-                  />
-                  <InputGroup.Append>
-                    <Button variant="outline-secondary" type="submit">
-                      <FontAwesomeIcon icon={faSearch} />
-                    </Button>
-                  </InputGroup.Append>
-                </InputGroup>
-              </Col>
-              <Col md="auto">
-                <ButtonToolbar
-                  className="mb-3"
-                  aria-label="Toolbar with Button groups"
+            <Row className="mx-0">
+              <InputGroup className="mr-3 search-box">
+                <FormControl
+                  placeholder="e.g. 21127 15-112"
+                  aria-label="Course ID"
+                  aria-describedby="course-id"
+                  value={courseID}
+                  onChange={handleFieldChange}
+                />
+                <InputGroup.Append>
+                  <Button variant="outline-secondary" type="submit">
+                    <FontAwesomeIcon icon={faSearch} />
+                  </Button>
+                </InputGroup.Append>
+              </InputGroup>
+              <ButtonToolbar
+                aria-label="Toolbar with Button groups"
+              >
+                <ToggleButtonGroup
+                  type="radio"
+                  name="fceToggle"
+                  defaultValue={fceMode ? "true" : "false"}
                 >
-                  <ToggleButtonGroup
-                    type="radio"
-                    name="fceToggle"
-                    defaultValue={fceMode ? "true" : "false"}
+                  <ToggleButton
+                    variant="outline-primary"
+                    value="false"
+                    onChange={handleSwitch}
                   >
-                    <ToggleButton
-                      variant="outline-primary"
-                      value="false"
-                      onChange={handleSwitch}
-                    >
-                      Course
-                    </ToggleButton>
-                    <ToggleButton
-                      disabled={!props.loggedIn}
-                      variant="outline-primary"
-                      value="true"
-                      onChange={handleSwitch}
-                    >
-                      {props.loggedIn ? null : (
-                        <FontAwesomeIcon icon={faLock} />
-                      )}{" "}
-                      FCE
-                    </ToggleButton>
-                  </ToggleButtonGroup>
-                </ButtonToolbar>
-              </Col>
+                    Course
+                  </ToggleButton>
+                  <ToggleButton
+                    disabled={!props.loggedIn}
+                    variant="outline-primary"
+                    value="true"
+                    onChange={handleSwitch}
+                  >
+                    {props.loggedIn ? null : (
+                      <FontAwesomeIcon icon={faLock} />
+                    )}{" "}
+                    FCE
+                  </ToggleButton>
+                </ToggleButtonGroup>
+              </ButtonToolbar>
             </Row>
           </Form>
         </Col>

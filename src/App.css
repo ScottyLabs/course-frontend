@@ -47,4 +47,7 @@ html {
   cursor: pointer;
   color: #5c5c5c;
 }
-  
+
+.search-box {
+  max-width: calc(100% - 142px);
+}
