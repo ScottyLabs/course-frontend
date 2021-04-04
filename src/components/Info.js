@@ -167,7 +167,7 @@ const Info = (props) => {
           <Form onSubmit={handleFormSubmit}>
             <h5>Course IDs</h5>
             <Row className="mx-0">
-              <InputGroup className="mr-3 search-box">
+              <InputGroup className={props.loggedIn ? "mr-3 search-box" : "mr-3 search-box-no-auth"}>
                 <FormControl
                   placeholder="e.g. 21127 15-112"
                   aria-label="Course ID"

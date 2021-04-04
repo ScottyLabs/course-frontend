@@ -51,3 +51,7 @@ html {
 .search-box {
   max-width: calc(100% - 142px);
 }
+
+.search-box-no-auth {
+  max-width: calc(100% - 161px);
+}
