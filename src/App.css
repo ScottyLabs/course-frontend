@@ -49,9 +49,9 @@ html {
 }
 
 .search-box {
-  max-width: calc(100% - 145px);
+  max-width: calc(100% - 150px);
 }
 
 .search-box-no-auth {
-  max-width: calc(100% - 165px);
+  max-width: calc(100% - 170px);
 }
