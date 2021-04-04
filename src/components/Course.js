@@ -54,17 +54,21 @@ const CourseRow = (props) => {
       if (response.status === 200) {
         const data = response.data;
         courseData.push(data);
+        dispatch(actions.info.addCourseData(courseData));
+        return true;
       }
       else if (response.status === 404) {
         setNotFound(true);
+        return false;
       } else {
         setError(true);
         setErrorMessage("Unknown course ID: " + courseID);
+        return false;
       }
-      dispatch(actions.info.addCourseData(courseData));
     } catch (e) {
       setError(true);
       console.log(e);
+      return false;
     }
   };
 
@@ -80,17 +84,21 @@ const CourseRow = (props) => {
           course.data.push(row);
         }
         fceData.push(course);
+        dispatch(actions.info.addFCEData(fceData));
+        return true;
       }
       else if (response.status === 404) {
         setNotFound(true);
+        return false;
       } else {
         setError(true);
         setErrorMessage("Unknown course ID: " + courseID);
+        return false;
       }
-      dispatch(actions.info.addFCEData(fceData));
     } catch (e) {
       setError(true);
       console.log(e);
+      return false;
     }
   };
 
@@ -105,10 +113,10 @@ const CourseRow = (props) => {
       } else {
         newLocation.pathname = pathname + "/" + id;
       }
-      history.push(newLocation);
-      queryCourse(id);
-      queryFCE(id);
-      setSearch(`${search} ${id}`);
+      if (queryCourse(id) || queryFCE(id)) {
+        history.push(newLocation);
+        setSearch(`${search} ${id}`);
+      }
     };
 
     return rsreplace(text, /(\d{2}-\d{3}|\d{5})/gm, (match, index, offset) => {
@@ -128,11 +136,28 @@ const CourseRow = (props) => {
     });
   };
 
+  const removeCourse = (id) => {
+    dispatch(actions.info.removeCourseData(id));
+    dispatch(actions.info.removeFCEData(id));
+    const pathname = history.location.pathname.split("/").pop();
+    const searches = pathname.split(" ");
+    const newSearches = [];
+    for (let search of searches) {
+      console.log(search, id);
+      if (search !== id && search.slice(0,2) + "-" + search.slice(2,5) !== id) {
+        newSearches.push(search);
+      }
+    }
+    console.log(newSearches)
+    setSearch(newSearches.join(" "));
+    history.push("/course/" + encodeURIComponent(newSearches.join(" ")));
+  };
+
   return (
     <Row className="mt-3 mx-0">
       <Accordion defaultActiveKey="0" className="w-100">
         <Card bg="light">
-          <CustomToggle eventKey="0">
+          <CustomToggle eventKey="0" callback={() => removeCourse(courseID)}>
             {courseID} {courseData.name}{" "}
             <Badge variant="info" className="ml-2">
               {courseData.department}
@@ -149,11 +174,11 @@ const CourseRow = (props) => {
               <Row className="mt-4">
                 <Col>
                   <h5>Prerequisites</h5>
-                  <p>{courseIDLinker(prereqs, history)}</p>
+                  <p>{prereqs ? courseIDLinker(prereqs, history) : "None"}</p>
                 </Col>
                 <Col>
                   <h5>Corequisites</h5>
-                  <p>{courseIDLinker(coreqs, history)}</p>
+                  <p>{coreqs ? courseIDLinker(coreqs, history) : "None"}</p>
                 </Col>
               </Row>
             </Container>
@@ -166,7 +191,6 @@ const CourseRow = (props) => {
 
 const Course = (props) => {
   const courseData = useSelector((state) => state.courseData);
-  console.log(courseData);
 
   if (!courseData) return null;
   const rows = [];
