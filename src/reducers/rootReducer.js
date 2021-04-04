@@ -1,3 +1,5 @@
+import { standardizeID } from "../util/infoUtils";
+
 const initState = {
   courseID: "",
   fceMode: true,
@@ -46,6 +48,44 @@ const rootReducer = (state = initState, action) => {
         ...state.fceQuery,
         semesters: action.semesters,
       },
+    };
+  } else if (action.type === "ADD_COURSE_DATA") {
+    return {
+      ...state,
+      courseData: state.courseData
+        ? [...state.courseData, action.courseData]
+        : action.courseData,
+    };
+  } else if (action.type === "ADD_FCE_DATA") {
+    return {
+      ...state,
+      fceData: state.fceData
+        ? [...state.fceData, action.fceData]
+        : action.fceData,
+    };
+  } else if (action.type === "REMOVE_COURSE_DATA") {
+    const courseData = state.courseData;
+    const newCourseData = [];
+    for (let course of courseData) {
+      if (standardizeID(course.courseID) !== standardizeID(action.courseID)) {
+        newCourseData.push(course);
+      }
+    }
+    return {
+      ...state,
+      courseData: newCourseData,
+    };
+  } else if (action.type === "REMOVE_FCE_DATA") {
+    const fceData = state.fceData;
+    const newFCEData = [];
+    for (let fce of fceData) {
+      if (standardizeID(fce.courseID) !== standardizeID(action.courseID)) {
+        newFCEData.push(fce);
+      }
+    }
+    return {
+      ...state,
+      fceData: newFCEData,
     };
   }
   return state;

@@ -37,3 +37,21 @@ html {
   height: 55px;
   background-color: #f5f5f5;
 }
+
+.icon-button {
+  transition: color .25s ease-in-out;
+  color: #cacaca;
+}
+
+.icon-button:hover {
+  cursor: pointer;
+  color: #5c5c5c;
+}
+
+.search-box {
+  max-width: calc(100% - 150px);
+}
+
+.search-box-no-auth {
+  max-width: calc(100% - 170px);
+}

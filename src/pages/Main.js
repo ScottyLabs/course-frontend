@@ -86,8 +86,12 @@ export const Main = (props) => {
       <div className="footer text-muted pt-3">
         <Container>
           <ul class="list-inline">
-            <li class="list-inline-item h5"><a href="https://scottylabs.org">ScottyLabs</a> Course Tool</li>
-            <li class="list-inline-item ml-3"><a href="/privacy">Privacy</a></li>
+            <li class="list-inline-item h5">
+              <a href="https://scottylabs.org">ScottyLabs</a> Course Tool
+            </li>
+            <li class="list-inline-item ml-3">
+              <a href="/privacy">Privacy</a>
+            </li>
           </ul>
         </Container>
       </div>

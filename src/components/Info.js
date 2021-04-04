@@ -75,7 +75,6 @@ const Info = (props) => {
       const fceData = [];
       for (const courseID of courseIDs) {
         const response = await axiosInstance.get(url + courseID);
-        console.log(response)
         if (response.status === 200) {
           const data = response.data;
           let course = { courseID: courseID, data: [] };
@@ -164,14 +163,11 @@ const Info = (props) => {
   ) : (
     <>
       <Row>
-        <Col md={8}>
+        <Col>
           <Form onSubmit={handleFormSubmit}>
             <h5>Course IDs</h5>
-            <ButtonToolbar
-              className="mb-3"
-              aria-label="Toolbar with Button groups"
-            >
-              <InputGroup className="mr-3">
+            <Row className="mx-0">
+              <InputGroup className={props.loggedIn ? "mr-3 search-box" : "mr-3 search-box-no-auth"}>
                 <FormControl
                   placeholder="e.g. 21127 15-112"
                   aria-label="Course ID"
@@ -185,29 +181,35 @@ const Info = (props) => {
                   </Button>
                 </InputGroup.Append>
               </InputGroup>
-              <ToggleButtonGroup
-                type="radio"
-                name="fceToggle"
-                defaultValue={fceMode ? "true" : "false"}
+              <ButtonToolbar
+                aria-label="Toolbar with Button groups"
               >
-                <ToggleButton
-                  variant="outline-primary"
-                  value="false"
-                  onChange={handleSwitch}
+                <ToggleButtonGroup
+                  type="radio"
+                  name="fceToggle"
+                  defaultValue={fceMode ? "true" : "false"}
                 >
-                  Course
-                </ToggleButton>
-                <ToggleButton
-                  disabled={!props.loggedIn}
-                  variant="outline-primary"
-                  value="true"
-                  onChange={handleSwitch}
-                >
-                  {props.loggedIn ? null : <FontAwesomeIcon icon={faLock} />}{" "}
-                  FCE
-                </ToggleButton>
-              </ToggleButtonGroup>
-            </ButtonToolbar>
+                  <ToggleButton
+                    variant="outline-primary"
+                    value="false"
+                    onChange={handleSwitch}
+                  >
+                    Course
+                  </ToggleButton>
+                  <ToggleButton
+                    disabled={!props.loggedIn}
+                    variant="outline-primary"
+                    value="true"
+                    onChange={handleSwitch}
+                  >
+                    {props.loggedIn ? null : (
+                      <FontAwesomeIcon icon={faLock} />
+                    )}{" "}
+                    FCE
+                  </ToggleButton>
+                </ToggleButtonGroup>
+              </ButtonToolbar>
+            </Row>
           </Form>
         </Col>
       </Row>
@@ -226,8 +228,17 @@ const Info = (props) => {
         </PopupAlert>
       </Snackbar>
       {fceMode ? <FCEForm /> : null}
-      {fceMode ? <FCE /> : null}
-      {fceMode ? null : <Course />}
+      {fceMode ? <FCE search={[courseID, setCourseID]} /> : null}
+      {fceMode ? null : (
+        <Course
+        courseID={[courseID, setCourseID]}
+        errorHandler={[
+          setError,
+          setErrorMessage,
+          setNotFound,
+        ]}
+        />
+      )}
     </>
   );
 };

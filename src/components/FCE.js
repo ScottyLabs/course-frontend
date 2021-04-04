@@ -14,6 +14,10 @@ import Rating from "@material-ui/lab/Rating";
 import StarBorderIcon from "@material-ui/icons/StarBorder";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faExclamationTriangle } from "@fortawesome/free-solid-svg-icons";
+import { useHistory } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import * as actions from "../actions";
+import { standardizeID } from "../util/infoUtils";
 
 const getAverages = (collatedData) => {
   if (!collatedData || collatedData.length === 0) return 0;
@@ -114,14 +118,6 @@ const CourseTable = (data) => {
   );
 };
 
-const standardizeID = (id) => {
-  if (!id.includes('-') && id.length >= 5) {
-    let newString = id.slice(0, 2) + '-' + id.slice(2);
-    return newString;
-  }
-  return id;
-}
-
 const trimFCEData = (courses, query) => {
   const collatedData = [];
   for (const data of courses) {
@@ -137,16 +133,17 @@ const trimFCEData = (courses, query) => {
       if (a.year === b.year) {
         if (semesters.indexOf(a.semester) < semesters.indexOf(b.semester)) {
           return 1;
-        } else if (semesters.indexOf(a.semester) > semesters.indexOf(b.semester)) {
+        } else if (
+          semesters.indexOf(a.semester) > semesters.indexOf(b.semester)
+        ) {
           return -1;
         } else {
           return 0;
         }
       } else {
-        return (a.year < b.year) ? 1 : -1;
+        return a.year < b.year ? 1 : -1;
       }
     });
-    console.log(fceData)
     for (const semData of fceData) {
       if (!enabledSemesters[semData.semester]) continue;
       if (!semesters.includes(semData.semester + semData.year)) {
@@ -215,11 +212,38 @@ const FCESummary = (props) => {
 };
 
 const FCERow = (props) => {
+  const history = useHistory();
+  const dispatch = useDispatch();
+  const [search, setSearch] = props.search;
+
+  const removeCourse = (id) => {
+    dispatch(actions.info.removeCourseData(id));
+    dispatch(actions.info.removeFCEData(id));
+    const pathname = history.location.pathname.split("/").pop();
+    const searches = pathname.split(" ");
+    const newSearches = [];
+    for (let search of searches) {
+      console.log(search, id);
+      if (
+        search !== id &&
+        search.slice(0, 2) + "-" + search.slice(2, 5) !== id
+      ) {
+        newSearches.push(search);
+      }
+    }
+    console.log(newSearches);
+    setSearch(newSearches.join(" "));
+    history.push("/fce/" + encodeURIComponent(newSearches.join(" ")));
+  };
+
   return (
     <Row className="mt-3 mx-0">
       <Accordion defaultActiveKey="0" className="w-100">
         <Card bg="light">
-          <CustomToggle eventKey="0">
+          <CustomToggle
+            eventKey="0"
+            callback={() => removeCourse(props.data.courseID)}
+          >
             {props.data.courseID} {props.data.courseName}{" "}
             <Badge variant="info" className="ml-2">
               {props.data.courseDept}
@@ -328,10 +352,11 @@ const getCourseInfo = (courseID, courseData) => {
   return [null, null];
 };
 
-const FCE = () => {
+const FCE = (props) => {
   const rawFCEData = useSelector((state) => state.fceData);
   const fceQuery = useSelector((state) => state.fceQuery);
   const courseData = useSelector((state) => state.courseData);
+  console.log(rawFCEData);
 
   if (!rawFCEData || !courseData || !rawFCEData.length || !courseData.length)
     return null;
@@ -373,7 +398,14 @@ const FCE = () => {
   let id = 0;
   rows.push(<FCESummary data={data} key={id++} />);
   for (const course of data.courseData) {
-    rows.push(<FCERow data={course} semesters={data.semesters} key={id++} />);
+    rows.push(
+      <FCERow
+        search={props.search}
+        data={course}
+        semesters={data.semesters}
+        key={id++}
+      />
+    );
   }
   return <>{rows}</>;
 };
