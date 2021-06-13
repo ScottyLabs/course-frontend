@@ -167,48 +167,50 @@ const Info = (props) => {
           <Form onSubmit={handleFormSubmit}>
             <h5>Course IDs</h5>
             <Row className="mx-0">
-              <InputGroup className={props.loggedIn ? "mr-3 search-box" : "mr-3 search-box-no-auth"}>
-                <FormControl
-                  placeholder="e.g. 21127 15-112"
-                  aria-label="Course ID"
-                  aria-describedby="course-id"
-                  value={courseID}
-                  onChange={handleFieldChange}
-                />
-                <InputGroup.Append>
-                  <Button variant="outline-secondary" type="submit">
-                    <FontAwesomeIcon icon={faSearch} />
-                  </Button>
-                </InputGroup.Append>
-              </InputGroup>
-              <ButtonToolbar
-                aria-label="Toolbar with Button groups"
-              >
-                <ToggleButtonGroup
-                  type="radio"
-                  name="fceToggle"
-                  defaultValue={fceMode ? "true" : "false"}
-                >
-                  <ToggleButton
-                    variant="outline-primary"
-                    value="false"
-                    onChange={handleSwitch}
+              <div className="search-row">
+                <div>
+                  <InputGroup>
+                    <FormControl
+                      placeholder="e.g. 21127 15-112"
+                      aria-label="Course ID"
+                      aria-describedby="course-id"
+                      value={courseID}
+                      onChange={handleFieldChange}
+                    />
+                    <InputGroup.Append>
+                      <Button variant="outline-secondary" type="submit">
+                        <FontAwesomeIcon icon={faSearch} />
+                      </Button>
+                    </InputGroup.Append>
+                  </InputGroup>
+                </div>
+                <ButtonToolbar aria-label="Toolbar with Button groups">
+                  <ToggleButtonGroup
+                    type="radio"
+                    name="fceToggle"
+                    defaultValue={fceMode ? "true" : "false"}
                   >
-                    Course
-                  </ToggleButton>
-                  <ToggleButton
-                    disabled={!props.loggedIn}
-                    variant="outline-primary"
-                    value="true"
-                    onChange={handleSwitch}
-                  >
-                    {props.loggedIn ? null : (
-                      <FontAwesomeIcon icon={faLock} />
-                    )}{" "}
-                    FCE
-                  </ToggleButton>
-                </ToggleButtonGroup>
-              </ButtonToolbar>
+                    <ToggleButton
+                      variant="outline-primary"
+                      value="false"
+                      onChange={handleSwitch}
+                    >
+                      Course
+                    </ToggleButton>
+                    <ToggleButton
+                      disabled={!props.loggedIn}
+                      variant="outline-primary"
+                      value="true"
+                      onChange={handleSwitch}
+                    >
+                      {props.loggedIn ? null : (
+                        <FontAwesomeIcon icon={faLock} />
+                      )}{" "}
+                      FCE
+                    </ToggleButton>
+                  </ToggleButtonGroup>
+                </ButtonToolbar>
+              </div>
             </Row>
           </Form>
         </Col>
@@ -231,12 +233,8 @@ const Info = (props) => {
       {fceMode ? <FCE search={[courseID, setCourseID]} /> : null}
       {fceMode ? null : (
         <Course
-        courseID={[courseID, setCourseID]}
-        errorHandler={[
-          setError,
-          setErrorMessage,
-          setNotFound,
-        ]}
+          courseID={[courseID, setCourseID]}
+          errorHandler={[setError, setErrorMessage, setNotFound]}
         />
       )}
     </>

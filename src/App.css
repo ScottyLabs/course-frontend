@@ -48,10 +48,17 @@ html {
   color: #5c5c5c;
 }
 
-.search-box {
+/* .search-box {
   max-width: calc(100% - 150px);
-}
+} */
 
 .search-box-no-auth {
   max-width: calc(100% - 170px);
+}
+
+.search-row {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 15px;
 }
