@@ -11,16 +11,12 @@ export const Main = (props) => {
   const history = useHistory();
   const location = useLocation();
   const { courseIDs } = useParams();
-  const [loggedIn, setLoggedIn] = useState(checkAccessToken(location));
+  const [loggedIn, setLoggedIn] = useState(false);
   const [loading, setLoading] = useState(false);
   const [loginError, setLoginError] = useState(false);
   const [logoutError, setLogoutError] = useState(false);
 
   if (location.search) {
-    history.push("/course");
-  }
-
-  if (props.fce && !loggedIn) {
     history.push("/course");
   }
 

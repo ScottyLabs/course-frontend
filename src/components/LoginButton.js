@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Button } from "react-bootstrap";
-import { useHistory } from "react-router-dom";
+import { useHistory } from "react-router";
 import axios from "axios";
 
 const BASE_URL = process.env.REACT_APP_API_URL;
@@ -18,7 +18,7 @@ const LoginButton = (props) => {
 
   useEffect(() => {
     if (window.localStorage.getItem("course_token")) {
-      history.push("/");
+      props.setState.setLoggedIn(true);
     }
   }, []);
 
@@ -61,7 +61,10 @@ const LoginButton = (props) => {
   return (
     <div>
       {props.state.loggedIn ? (
-        <Button className="float-right" variant="outline-primary" size="sm">
+        <Button className="float-right" variant="outline-primary" size="sm" onClick={() => {
+          localStorage.removeItem("course_token");
+          window.location.reload();
+        }}>
           Logout
         </Button>
       ) : (
@@ -98,7 +101,7 @@ const LoginButton = (props) => {
                       token: event.data,
                     })
                     .then(() => {
-                      history.push("/");
+                      props.setState.setLoggedIn(true);
                       setLoading(false);
                     })
                     .catch(() => {

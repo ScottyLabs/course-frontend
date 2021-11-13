@@ -74,7 +74,13 @@ const Info = (props) => {
     try {
       const fceData = [];
       for (const courseID of courseIDs) {
-        const response = await axiosInstance.get(url + courseID);
+        const response = await axiosInstance({
+          method: 'post',
+          url: url + courseID,
+          data: {
+            token: localStorage.getItem("course_token")
+          }
+        });
         if (response.status === 200) {
           const data = response.data;
           let course = { courseID: courseID, data: [] };
@@ -100,10 +106,10 @@ const Info = (props) => {
     setCourseID(e.target.value);
   };
 
-  const handleFormSubmit = (e) => {
+  const handleFormSubmit = (e, loggedIn) => {
     e.preventDefault();
     const courseIDs = courseID.split(" ");
-    queryFCE(courseIDs);
+    if (loggedIn) queryFCE(courseIDs);
     queryCourse(courseIDs);
     dispatch(actions.info.setCourseIDs(courseIDs));
 
@@ -164,7 +170,7 @@ const Info = (props) => {
     <>
       <Row>
         <Col>
-          <Form onSubmit={handleFormSubmit}>
+          <Form onSubmit={(e) => handleFormSubmit(e, props.loggedIn)}>
             <h5>Course IDs</h5>
             <Row className="mx-0">
               <div className="search-row">
