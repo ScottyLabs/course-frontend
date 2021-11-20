@@ -106,10 +106,10 @@ const Info = (props) => {
     setCourseID(e.target.value);
   };
 
-  const handleFormSubmit = (e, loggedIn) => {
+  const handleFormSubmit = (e) => {
     e.preventDefault();
     const courseIDs = courseID.split(" ");
-    if (loggedIn) queryFCE(courseIDs);
+    if (props.loggedIn) queryFCE(courseIDs);
     queryCourse(courseIDs);
     dispatch(actions.info.setCourseIDs(courseIDs));
 
@@ -157,7 +157,7 @@ const Info = (props) => {
   useEffect(() => {
     if (props.courseIDs) {
       const courseIDs = props.courseIDs.split(" ");
-      queryFCE(courseIDs);
+      if (props.loggedIn) queryFCE(courseIDs);
       queryCourse(courseIDs);
       dispatch(actions.info.setCourseIDs(courseIDs));
       setCourseID(props.courseIDs);
@@ -170,7 +170,7 @@ const Info = (props) => {
     <>
       <Row>
         <Col>
-          <Form onSubmit={(e) => handleFormSubmit(e, props.loggedIn)}>
+          <Form onSubmit={handleFormSubmit}>
             <h5>Course IDs</h5>
             <Row className="mx-0">
               <div className="search-row">
