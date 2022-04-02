@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import LoginButton from "../components/LoginButton";
-import { Row, Col, Container, Spinner } from "react-bootstrap";
+import { Row, Col, Container, Spinner, Alert } from "react-bootstrap";
 import Info from "../components/Info";
 import { Snackbar } from "@material-ui/core";
 import { useLocation, useHistory, useParams } from "react-router-dom";
@@ -35,6 +35,10 @@ export const Main = (props) => {
   return (
     <div className="App">
       <Container className="pb-5 content">
+        <Alert variant="info" className="mt-3">
+          Check out the Beta version of the new ScottyLabs Course Tool{" "}
+          <a href="https://stg-course.scottylabs.org">here</a>!
+        </Alert>
         <Row className="my-3">
           <Col>
             <h2>ScottyLabs Course Tool</h2>
